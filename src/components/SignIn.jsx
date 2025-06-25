@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { UserSignIn } from "../api";
 import { loginSuccess } from "../redux/reducers/UserSlice";
 import { openSnackbar } from "../redux/reducers/SnackbarSlice";
-import LogoImage from "../utils/Images/Logo.png";
+import LogoImage from "../utils/Images/Logo1.png";
 import {jwtDecode} from "jwt-decode";
 import { useNavigate } from "react-router-dom"; 
 
@@ -41,9 +41,11 @@ const TextButton = styled.div`
 `;
 
 const Logo = styled.img`
+  height: 150px;
+  width: auto;
   position: absolute;
-  top: 10px;
-  left: 180px;
+  top: 60px;
+  left: 120px;
   z-index: 10;
 `;
 
@@ -73,18 +75,20 @@ const SignIn = ({ setOpenAuth }) => {
   };
 
   const handelSignIn = async () => {
+    const email = username;
     setLoading(true);
     setButtonDisabled(true);
     if (validateInputs()) {
-      await UserSignIn({ username, password })
-         
-        .then((res) => {
-          const token = res.data.jwtToken;
+      await UserSignIn({ email , password })
+         .then((res) => {
+          console.log(res.data);
+          const token = res.data.token;
           const decodedToken = jwtDecode(token);
           console.log(decodedToken);
-          const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+          const userRole = decodedToken.role;
           console.log(userRole);
            dispatch(loginSuccess(res.data));
+           console.log(userRole);
           if (userRole === "Admin") {
             navigate("/admin/dashboard"); 
             setOpenAuth(false);
@@ -95,7 +99,7 @@ const SignIn = ({ setOpenAuth }) => {
             navigate("/"); // Navigate to homepage for regular users
             setOpenAuth(false);
           }
-          
+          console.log("Login:");
           dispatch(
             openSnackbar({
               message: "Login Successful",

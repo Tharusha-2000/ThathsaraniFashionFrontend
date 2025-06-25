@@ -109,38 +109,36 @@ const SignUp = ({ setOpenAuth }) => {
 
     if (validateInputs()) {
       const username = email; 
-      const roles = ["customer"]; 
-      const userType = "customer"; 
+     // const roles = ["customer"]; 
+     // const userType = "customer"; 
       const userData = {
-        firstName,
-        lastName,
+        fname: firstName,
+        lname: lastName ,
         email,
-        userType,
+        password,
       };
-
+      console.log('userData', userData);
       try {
-        const createResponse = await UserCreate(userData);
-        
-        if (createResponse.status === 200) {
-          const signUpResponse = await UserSignUp({ username, password, roles });
+          const signUpResponse = await UserSignUp(userData);
           console.log(' createuser', signUpResponse);
 
-          if (signUpResponse.status === 200) {
-            console.log('UserSignUp response:', signUpResponse);
-            const signInResponse = await UserSignIn({ username, password });
-            console.log('UserSignIn response:', signInResponse);
-            dispatch(loginSuccess(signInResponse.data));
-            dispatch(
-              openSnackbar({
-                message: "Sign Up Successful",
-                severity: "success",
+          // if (signUpResponse.status === 200) {
+          //   console.log('UserSignUp response:', signUpResponse);
+          //   const signInResponse = await UserSignIn({ username, password });
+          //   console.log('UserSignIn response:', signInResponse);
+           dispatch(loginSuccess(signUpResponse.data));
+           dispatch(
+            openSnackbar({
+                 message: signUpResponse.data.msg ,
+                 severity: "success",
               })
-            );
-            setLoading(false);
-            setButtonDisabled(false);
-            setOpenAuth(false);
-          }
-        }
+           );
+             setLoading(false);
+             setButtonDisabled(false);
+             setOpenAuth(false);
+          // }
+
+        
 
       } catch (err) {
         console.log('Error in handleSignUp:', err);

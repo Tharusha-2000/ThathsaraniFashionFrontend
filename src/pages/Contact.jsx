@@ -66,7 +66,7 @@ const Contact = () => {
               <IoMdMail size={30} className="info-icon" />
               <p className="info-title">Email</p>
             </div>
-            <a href="mailto:brdilshanjayaweera@gmail.com" className="info-details">mossamelt@gmail.com</a>
+            <a href="mailto:thathsaranifashionneg@gmail.com" className="info-details">thathsaranifashion@gmail.com</a>
           </div>
 
           <div className="info-item">

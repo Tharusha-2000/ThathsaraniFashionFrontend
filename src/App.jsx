@@ -59,54 +59,54 @@ function App() {
               path="/admin/dashboard"
               exact
               element={
-                 <PrivateRoute>
+                //  <PrivateRoute>
                     <AdminDashboard />
-                 </PrivateRoute>
+                //  </PrivateRoute>
               }
             />
             <Route
               path="/admin/customers"
               exact
               element={
-                <PrivateRoute>
+                // <PrivateRoute>
                   <Customers />
-                </PrivateRoute>
+                // </PrivateRoute>
               }
             />
             <Route
               path="/admin/orders"
               exact
               element={
-                <PrivateRoute>
+                // <PrivateRoute>
                   <Orders />
-                </PrivateRoute>
+                // </PrivateRoute>
               }
             />
             <Route
               path="/admin/products"
               exact
               element={
-                <PrivateRoute>
+                // <PrivateRoute>
                   <Products/>
-                </PrivateRoute>
+                // </PrivateRoute>
               }
             />
             <Route
               path="/admin/add-product"
               exact
               element={
-                <PrivateRoute>
+                // <PrivateRoute>
                   <AddProduct/>
-                </PrivateRoute>
+                // </PrivateRoute>
               }
             />
             <Route
               path="/admin/feedbacks"
               exact
               element={
-                <PrivateRoute>
+              //  <PrivateRoute>
                 <Feedbacks/>
-                </PrivateRoute>
+              //  </PrivateRoute>
               }
             />
           </Routes>

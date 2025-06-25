@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import styled from "styled-components";
 import { Link as LinkR, NavLink } from "react-router-dom";
-import LogoImg from "../utils/Images/Logo1.png";
+import LogoImg from "../utils/Images/Logo2.png";
 import {
   FavoriteBorder,
   MenuRounded,
@@ -42,14 +42,18 @@ const NavLogo = styled(LinkR)`
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 0 6px;
+  padding: 0 0px;
   font-weight: 500;
   font-size: 18px;
   text-decoration: none;
   color: inherit;
+  
 `;
 const Logo = styled.img`
-  height: 34px;
+  height: 60px;
+  position: absolute; /* Position the logo absolutely */
+  top: 1px; /* Align to the top */
+  left: 2px;
 `;
 const NavItems = styled.ul`
   width: 100%;
@@ -194,7 +198,7 @@ const Navbar = ({ setOpenAuth, openAuth, currentUser }) => {
 
         <NavItems>
           <Navlink to="/">Home</Navlink>
-          <Navlink to="/dishes">Dishes</Navlink>
+          <Navlink to="/dishes">Products</Navlink>
           {currentUser && (
           <Navlink to="/orders">Orders</Navlink>
           )}

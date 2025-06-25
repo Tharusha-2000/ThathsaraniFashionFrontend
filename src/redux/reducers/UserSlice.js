@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {jwtDecode} from 'jwt-decode';
+import { act } from "react";
 
 const initialState = {
 
@@ -18,23 +19,25 @@ export const userSlice = createSlice({
       console.log("Payload received in loginSuccess:", action.payload);
       // state.currentUser = action.payload.user;
        console.log(action.payload.user);
-       console.log(action.payload.jwtToken);
-      localStorage.setItem("Mossa-Melt-token", action.payload.jwtToken);
-      console.log(action.payload.jwtToken);
-      const tokenParts=action.payload.jwtToken.split('.');
+       console.log(action.payload.token);
+      localStorage.setItem("Mossa-Melt-token", action.payload.token);
+      console.log(action.payload.token);
+      const tokenParts=action.payload.token.split('.');
       const encodedPayload=tokenParts[1];
       const decodedPayload=JSON.parse(atob(encodedPayload));
+      console.log("Decoded Payload:", decodedPayload);
       // state.currentUser = jwtDecode(action.payload.jwtToken);
 
       state.currentUser = {
         ...decodedPayload,
-        token: action.payload.jwtToken, // You might want to store the token as well
-        role: decodedPayload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
-         id: decodedPayload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
+        token: action.payload.token, // You might want to store the token as well
+        role: decodedPayload.role,
+        FirstName:decodedPayload.fname,
+        id: decodedPayload.id, 
       
       };
     
-      console.log("Current User:", state.currentUser.FirstName);
+      console.log("Current User:", state.currentUser);
 
     },
     logout: (state) => {

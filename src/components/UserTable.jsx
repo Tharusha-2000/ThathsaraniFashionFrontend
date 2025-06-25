@@ -14,9 +14,8 @@ const UsersTable = () => {
     const fetchUsers = async () => {
       try {
         const response = await getAllUsers();
-        console.log("dfjkbdgsrFetched users:jbnm", response.data);
+        console.log("Fetched users:jbnm", response.data);
         setData(response.data);
-
         setLoading(false);
       } catch (error) {
         console.error("Error fetching users:", error);

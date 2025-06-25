@@ -2,22 +2,23 @@ import axios from "axios";
 
 
 const API = axios.create({
-  baseURL: "https://localhost:7000/api/",
+  baseURL: "http://localhost:7000/api/users/",
 });
 
-
-
 export const UserSignIn = async (data) => {
-  return await API.post(`Auth/login`, data);
+  return await API.post(`login`, data);
 }
-export const UserSignUp = async (data) =>
-  await API.post(`Auth/register`, data);
-
+export const UserSignUp = async (data) =>{
+  console.log('Data being sent to API:', data);
+  const response= await API.post(`register`, data);
+  console.log('Response from API:', response);
+  return response;
+}
 export const SendEmail = async (data) =>
-  await API.post(`Auth/forgot-password`, data);
+  await API.post(`forgot-password`, data);
 
 export const PasswordChange = async (data) =>
-  await API.post(`Auth/reset-password`, data);
+  await API.post(`reset-password`, data);
 
 export const UserCreate = async (data) => {
   const response = await API.post(`User`, data);

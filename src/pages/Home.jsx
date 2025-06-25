@@ -71,7 +71,7 @@ const Home = () => {
         <Img src={HeaderImage} />
       </Section>
       <Section>
-        <Title>Food Categories</Title>
+        <Title>Cloth Categories</Title>
         <CardWrapper>
           {category.map((category) => (
             <ProductCategoryCard category={category} />
