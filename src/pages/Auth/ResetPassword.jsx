@@ -1,23 +1,24 @@
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Input from '@mui/material/Input';
-import image2 from '../../utils/Images/forgetpass.png';
+import image2 from '../../utils/Images/varify.png';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { PasswordChange } from "../../api/index";
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams,useLocation } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { openSnackbar } from "../../redux/reducers/SnackbarSlice";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
-  const token = searchParams.get('token');
-  const email = searchParams.get('email');
+  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { email} = location.state || {};
+
 
   const [values, setValues] = useState({
     password: '',
@@ -67,8 +68,9 @@ const ResetPassword = () => {
     }
 
     try {
-      console.log('token:', token);
-      const response = await PasswordChange({ email,token, newPassword: values.password });
+     // console.log('token:', token);
+      const response = await PasswordChange({email:email,password:values.password});
+      console.log('response:', response);
       dispatch(
         openSnackbar({
           message: response.message || "Password updated successfully!",

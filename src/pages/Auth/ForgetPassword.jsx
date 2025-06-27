@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Input from "@mui/material/Input";
-import image2 from "../../utils/Images/forgetpass.png";
+import image2 from "../../utils/Images/varify.png";
 import Button from "../../components/Button";
 import { SendEmail } from "../../api";
 import { useDispatch } from "react-redux";
@@ -30,15 +30,15 @@ const ForgetPassword = () => {
     try {
      
       const response = await SendEmail({ email });
-
+      console.log("Email sent response:", response);
       dispatch(
         openSnackbar({
           message: response?.data?.message || "Email sent successfully!",
           severity: "success",
         })
-
+        
       );
-     
+      navigate('/varify', { state: { email } });   
 
     } catch (error) {
       console.error("Error sending email:", error);

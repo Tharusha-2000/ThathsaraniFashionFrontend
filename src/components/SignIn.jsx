@@ -117,7 +117,7 @@ const SignIn = ({ setOpenAuth }) => {
           console.log(err.response);
           dispatch(
             openSnackbar({
-              message:  err.response.data,
+              message:  err.response.data.msg,
               severity: "error",
             })
           );

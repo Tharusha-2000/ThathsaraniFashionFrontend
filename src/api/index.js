@@ -15,10 +15,10 @@ export const UserSignUp = async (data) =>{
   return response;
 }
 export const SendEmail = async (data) =>
-  await API.post(`forgot-password`, data);
+  await API.post(`generateOTP&sendmail`, data);
 
 export const PasswordChange = async (data) =>
-  await API.post(`reset-password`, data);
+  await API.put(`resetPassword`, data);
 
 export const UserCreate = async (data) => {
   const response = await API.post(`User`, data);

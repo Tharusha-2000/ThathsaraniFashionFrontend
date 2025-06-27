@@ -19,6 +19,7 @@ import { Snackbar } from "@mui/material";
 import { closeSnackbar } from "./redux/reducers/SnackbarSlice";
 import Products from "./pages/Admin/Products";
 import ForgetPassword from "./pages/Auth/ForgetPassword";
+import Varify from "./pages/Auth/Varify";
 import ResetPassword from "./pages/Auth/ResetPassword";
 import Feedbacks from "./pages/Admin/Feedbacks";
 import Contact from "./pages/Contact";
@@ -51,6 +52,7 @@ function App() {
             <Route path="/dishes" exact element={<FoodListing />} />
             <Route path="/forgetPassword" exact element={<ForgetPassword />} />
             <Route path="/reset-password" exact element={<ResetPassword/>} />
+            <Route path="/varify" exact element={<Varify />} />
             <Route path="/orders" exact element={<Order />} />
             <Route path="/contact" exact element={<Contact />} />
             <Route path="/checkout" exact element={<Checkout />} />
