@@ -26,7 +26,7 @@ export const UserCreate = async (data) => {
 };
 
 export const getUserById = async (id) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -39,7 +39,7 @@ export const getUserById = async (id) => {
 };
 
 export const updateUser = async (data) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -52,7 +52,7 @@ export const updateUser = async (data) => {
 
 //products
 export const getAllProducts = async (filter) =>
-  await API.get(`Product/GetAllProducts?${filter}`);
+  await API.get(`products?${filter}`);
 
 export const getProductDetails = async (id) =>
   await API.get(`Product/GetProductById/${id}`);
@@ -60,7 +60,7 @@ export const getProductDetails = async (id) =>
 
 
 export const createProduct = async (productData) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -68,26 +68,28 @@ export const createProduct = async (productData) => {
     },
   };
 
-  return await API.post("Product/CreateProductAsync", productData, config);
+  return await API.post("product/", productData, config);
 };
 
+
+
 export const updateProduct = async (id, productData) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
-
+  console.log("Product Data:", productData);
   return await API.put(
-    `Product/UpdateProductAsync/${id}`,
+    `product/${id}`,
     productData,
     config
   );
 };
 export const deleteProduct = async (productId) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -102,7 +104,7 @@ export const deleteProduct = async (productId) => {
 
 
 export const getCartByUserId = async (userId) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -113,7 +115,7 @@ export const getCartByUserId = async (userId) => {
 };
 
 export const getCart = async () => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -125,7 +127,7 @@ export const getCart = async () => {
 };
 
 export const addToCart = async (data) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -138,7 +140,7 @@ export const addToCart = async (data) => {
 
 export const updateFromCart = async ({ cartId, count }) => {
   const data = { count: count > 0 ? count : 0 }; // If count is <= 0, treat as removal (count = 0)
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -150,7 +152,7 @@ export const updateFromCart = async ({ cartId, count }) => {
 };
 
 export const updateItemOnCart = async (data) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -162,7 +164,7 @@ export const updateItemOnCart = async (data) => {
 
 
 export const deleteFromCart = async (cartId) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -182,7 +184,7 @@ export const getUserById2 = async (id) => {
 //Orders
 export const createOrder = async (data) => {
   console.log(data);
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
 
   const config = {
     headers: {
@@ -195,7 +197,7 @@ export const createOrder = async (data) => {
 
 export const storeOrderProduct = async (data) => {
   console.log(data);
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -208,7 +210,7 @@ export const storeOrderProduct = async (data) => {
 };
 
 export const getOrders = async () => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -219,7 +221,7 @@ export const getOrders = async () => {
 };
 
 export const handelViewOrder = async (orderId) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -230,7 +232,7 @@ export const handelViewOrder = async (orderId) => {
 };
 
 export const updateOrder = async (orderId, updatedOrder) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -266,7 +268,7 @@ export const getProductFeedbacks = async (productId) => {
 
 //API for fetching Feedbacks by order Id
 export const GetFeedbackByOrderId = async (orderId) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -282,7 +284,7 @@ export const GetFeedbackByOrderId = async (orderId) => {
 
 //API fetching for add product feedback
 export const SaveProductFeedback = async (newFeedback) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -299,7 +301,7 @@ export const SaveProductFeedback = async (newFeedback) => {
 
 //API for feching orders by orderId
 export const fetchOrdersByUserId = async (userId) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -312,7 +314,7 @@ export const fetchOrdersByUserId = async (userId) => {
 
 //API for fetching order included products
 export const getOrderProductByOrderId = async (orderId) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -331,7 +333,7 @@ export const getProductById = async (productId) => {
 
 //users-dilum
 export const getAllUsers = async () => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -341,7 +343,7 @@ export const getAllUsers = async () => {
   return await API.get(`User`, config);
 };
 export const deleteUser = async (id) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -354,7 +356,7 @@ export const deleteUser = async (id) => {
 
 //get all orders -dilum
 export const getAllOrders = async () => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -365,7 +367,7 @@ export const getAllOrders = async () => {
 };
 //get all feedback -dilum
 export const getAllFeedback = async () => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {
@@ -376,7 +378,7 @@ export const getAllFeedback = async () => {
 };
 //get order details -dilum
 export const getallOrderDetails = async (id) => {
-  const token = localStorage.getItem("Mossa-Melt-token");
+  const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
     headers: {

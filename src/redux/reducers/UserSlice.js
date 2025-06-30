@@ -20,7 +20,7 @@ export const userSlice = createSlice({
       // state.currentUser = action.payload.user;
        console.log(action.payload.user);
        console.log(action.payload.token);
-      localStorage.setItem("Mossa-Melt-token", action.payload.token);
+      localStorage.setItem("thathsarani-token", action.payload.token);
       console.log(action.payload.token);
       const tokenParts=action.payload.token.split('.');
       const encodedPayload=tokenParts[1];
@@ -42,7 +42,7 @@ export const userSlice = createSlice({
     },
     logout: (state) => {
       state.currentUser = null;
-      localStorage.removeItem("Mossa-Melt-token");
+      localStorage.removeItem("thathsarani-token");
     },
   },
 });

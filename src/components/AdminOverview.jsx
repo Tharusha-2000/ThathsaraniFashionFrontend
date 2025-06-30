@@ -59,7 +59,7 @@ function AdminOverview() {
     const fetchProducts = async () => {
       try {
         const response = await getAllProducts();
-        setProducts(response.data);
+        setProducts(response.data.products);
         console.log("Fetched products:", response.data);
       } catch (error) {
         console.error("Error fetching products:", error);

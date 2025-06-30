@@ -20,6 +20,7 @@ import Swal from 'sweetalert2';
 
 
 function UpdateProduct({ open, onClose, productData, onUpdate }) {
+  console.log("Product Data:", productData);
   const [productName, setProductName] = useState(productData.name || "");
   const [description, setDescription] = useState(productData.description || "");
   const [imageFile, setImageFile] = useState(null);
@@ -39,12 +40,15 @@ function UpdateProduct({ open, onClose, productData, onUpdate }) {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const allCategories = [
-    "Cheese",
-    "Sausage",
-    "Mushroom",
-    "Chicken",
-    "Veg",
-    "pizza",
+    "Blouse",
+    "Baggy T-Shirt",
+    "T-Shirt",
+    "Lady's Denim",
+    "Frock",
+    "Baby Frock",
+    "Baby Full Dress",
+    "Sale",
+    "Children's Dress",
   ];
 
   const validateForm = () => {
@@ -114,9 +118,10 @@ function UpdateProduct({ open, onClose, productData, onUpdate }) {
     e.preventDefault();
 
     if (!validateForm()) return;
+    
 
     const updatedProduct = {
-      productId: productData.productId,
+      // productId: productData.productId,
       name: productName,
       description,
       isAvailable,
@@ -124,10 +129,10 @@ function UpdateProduct({ open, onClose, productData, onUpdate }) {
       imageUrl: imageUrl,
       categories: selectedCategories,
     };
-
+    
     // Handle image upload
     if (imageFile) {
-      const imageRef = ref(storage, `product_images/${imageFile.name}`);
+      const imageRef = ref(storage, `thathsarani/${imageFile.name}`);
       const uploadTask = uploadBytesResumable(imageRef, imageFile);
 
       uploadTask.on(
@@ -138,8 +143,12 @@ function UpdateProduct({ open, onClose, productData, onUpdate }) {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            console.log("File available at", downloadURL);
+            console.log("Updated Product:", updatedProduct);
             updatedProduct.imageUrl = downloadURL;
+            console.log("Updated Product with Image URL:", updatedProduct);
             updateProductData(updatedProduct);
+            console.log(updateProductData);
           });
         }
       );
@@ -151,8 +160,9 @@ function UpdateProduct({ open, onClose, productData, onUpdate }) {
 
   const updateProductData = async (updatedProduct) => {
     console.log(updatedProduct);
+    console.log(productData._id);
     try {
-      await updateProduct(updatedProduct.productId, updatedProduct);
+      await updateProduct(productData._id, updatedProduct);
       Swal.fire("Success", "Product updated successfully!", "success");
       onUpdate(updatedProduct);
       setTimeout(() => {

@@ -24,8 +24,8 @@ const Products = () => {
       try {
         const response = await getAllProducts();
         if (response.status === 200) {
-          setData(response.data); 
-          console.log('Fetched products:', response.data);
+          setData(response.data.products); 
+          console.log('Fetched products:', response);
         }
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -53,7 +53,7 @@ const Products = () => {
           if (response.status === 200) {
             Swal.fire('Deleted!', 'Product has been deleted.', 'success');
             const updatedProducts = await getAllProducts();
-            setData(updatedProducts.data);
+            setData(updatedProducts.data.products);
           }
         } catch (error) {
           console.error('Error deleting product:', error);
@@ -76,10 +76,11 @@ const Products = () => {
   };
 
   const handleUpdateProduct = (updatedProduct) => {
+    console.log('Updating product:', updatedProduct);
     setData((prevData) =>
       prevData.map((product) =>
-        product.productId === selectedProduct.productId
-          ? { ...product, ...updatedProduct }
+        product._id === selectedProduct._id
+          ? { ...product, ...updatedProduct } 
           : product
       )
     );
@@ -90,9 +91,10 @@ const Products = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'productId',
-        header: 'ID',
+        accessorKey: 'index',
+        header: 'No.',
         size: isMobile ? 20 : 40,
+        Cell: ({ row }) => row.index + 1,
       },
       {
         accessorKey: 'imageUrl',
@@ -171,7 +173,7 @@ const Products = () => {
             </IconButton>
             <IconButton
               size="small"
-              onClick={() => handleDelete(row.original.productId)}
+              onClick={() => handleDelete(row.original._id)}
               sx={{
                 color: '#f44336',
                 '&:hover': {

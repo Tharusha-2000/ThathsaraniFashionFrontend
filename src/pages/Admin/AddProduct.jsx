@@ -139,7 +139,7 @@ function AddProduct() {
       alert('Please select an image to upload.');
       return;
     }
-    const imagePath = `product/${image.name + uuidv4()}`;
+    const imagePath = `thathsarani/${image.name + uuidv4()}`;
     const imageRef = ref(storage, imagePath);
     const uploadFile = uploadBytesResumable(imageRef, image);
 
@@ -277,7 +277,7 @@ function AddProduct() {
                   Select Categories
                 </Typography>
                 <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-                  {["Cheese", "Sausage", "Mushroom", "Chicken","Veg","pizza"].map((category) => (
+                  {[ "Blouse","Baggy T-Shirt", "T-Shirt", "Lady's Denim", "Frock", "Baby Frock",  "Baby Full Dress","Sale", "Children's Dress",].map((category) => (
                     <FormControlLabel
                       key={category}
                       control={

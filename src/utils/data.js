@@ -25,7 +25,6 @@ export const category = [
     name: "Frock",
     off: "30-40% OFF",
   },
-  
   {
     img: "https://firebasestorage.googleapis.com/v0/b/zionlogy-4b6e6.appspot.com/o/thathsarani%2FScreenshot%202025-02-11%20at%2013.49.08.png?alt=media&token=e1f10e5d-8636-4c69-a2f8-ac6e99fca2fb",
     name: "Baby Frock",

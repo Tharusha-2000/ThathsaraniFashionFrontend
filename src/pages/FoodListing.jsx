@@ -85,7 +85,7 @@ const Selectableitem = styled.div`
 const FoodListing = () => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
-  const [priceRange, setPriceRange] = useState([500, 2000]); // Default price range
+  const [priceRange, setPriceRange] = useState([0, 2000]); // Default price range
   const [selectedCategories, setSelectedCategories] = useState([]); // Default selected categories
 
   const getFilteredProductsData = async () => {
@@ -98,13 +98,14 @@ const FoodListing = () => {
           }&categories=${selectedCategories.join(",")}`
         : `minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`
     ).then((res) => {
-      setProducts(res.data);
+      setProducts(res.data.products);
       setLoading(false);
     });
   };
 
   useEffect(() => {
     getFilteredProductsData();
+    console.log(products);
   }, [priceRange, selectedCategories]);
 
   return (
@@ -118,12 +119,12 @@ const FoodListing = () => {
                 <Slider
                   aria-label="Price"
                   defaultValue={priceRange}
-                  min={500}
+                  min={0}
                   max={2000}
                   step={50}
                   valueLabelDisplay="auto"
                   marks={[
-                    { value: 500, label: "LKR 500" },
+                    { value: 0, label: "LKR 0" },
                     { value: 2000, label: "LKR 2000" },
                   ]}
                   onChange={(e, newValue) => setPriceRange(newValue)}
