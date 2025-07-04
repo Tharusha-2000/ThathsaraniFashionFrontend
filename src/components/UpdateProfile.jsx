@@ -12,8 +12,8 @@ import { updateUser } from "../api/index";
 
 const UpdateProfile = ({ open, onClose, userdata, onUpdate }) => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    fname: '',
+    lname: '',
     email: '',
     phoneNo: '',
     address: '',
@@ -22,15 +22,13 @@ const UpdateProfile = ({ open, onClose, userdata, onUpdate }) => {
 
   // Populate formData with userdata only when the dialog opens for the first time
   useEffect(() => {
-    if (open && userdata && !formData.firstName) {
+    if (open && userdata && !formData.fname) {
       setFormData({
-        id: userdata[0]?.id || '',
-        firstName: userdata[0]?.firstName || '',
-        lastName: userdata[0]?.lastName || '',
-        email: userdata[0]?.email || '',
-        userType: userdata[0]?.userType || '',
-        phoneNo: userdata[0]?.phoneNo || '',
-        address: userdata[0]?.address || '',
+        fname: userdata.fname || '',
+        lname: userdata.lname || '',
+        email: userdata.email || '',
+        phoneNo: userdata.phoneNo || '',
+        address: userdata.address || '',
       });
     }
   }, [open, userdata]);
@@ -70,20 +68,27 @@ const UpdateProfile = ({ open, onClose, userdata, onUpdate }) => {
         <TextField
           margin="normal"
           label="First Name"
-          name="firstName"
-          value={formData.firstName}
-          onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+          name="fname"
+          value={formData.fname}
+          onChange={(e) => setFormData({ ...formData, fname: e.target.value })}
           fullWidth
         />
         <TextField
           margin="normal"
           label="Last Name"
-          name="lastName"
-          value={formData.lastName}
-          onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+          name="lname"
+          value={formData.lname}
+          onChange={(e) => setFormData({ ...formData, lname: e.target.value })}
           fullWidth
         />
-     
+        <TextField
+          margin="normal"
+          label="Email"
+          name="email"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          fullWidth
+        />
         <TextField
           margin="normal"
           label="Phone Number"

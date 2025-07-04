@@ -25,7 +25,7 @@ export const UserCreate = async (data) => {
   return response;
 };
 
-export const getUserById = async (id) => {
+export const getUserById = async () => {
   const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
@@ -34,7 +34,7 @@ export const getUserById = async (id) => {
     },
   };
 
-  const response = await API.get(`User/${id}`, config);
+  const response = await API.get(`user`, config);
   return response.data;
 };
 
@@ -46,7 +46,7 @@ export const updateUser = async (data) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const response = await API.put(`User`, data, config);
+  const response = await API.put(`updateuser`, data, config);
   return response;
 };
 
@@ -55,7 +55,7 @@ export const getAllProducts = async (filter) =>
   await API.get(`products?${filter}`);
 
 export const getProductDetails = async (id) =>
-  await API.get(`Product/GetProductById/${id}`);
+  await API.get(`product/${id}`);
 
 
 

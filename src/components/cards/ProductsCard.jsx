@@ -215,7 +215,7 @@ const ProductsCard = ({ product }) => {
           <Rating readOnly value={3.5} sx={{ fontSize: "14px" }} />
         </Rate>
       </Top>
-      <Details onClick={() => navigate(`/dishes/${product.productId}`)}>
+      <Details onClick={() => navigate(`/dishes/${product._id}`)}>
         <Title>{product?.name}</Title>
         <Flex>
           {product?.categories &&

@@ -168,7 +168,8 @@ const FoodDetails = () => {
   const getProduct = async () => {
     setLoading(true);
     await getProductDetails(id).then((res) => {
-      setProduct(res.data);
+      setProduct(res.data.product);
+      console.log(res.data);
       setLoading(false);
     });
   };
@@ -277,16 +278,16 @@ const FoodDetails = () => {
 
   useEffect(() => {
     const getProductReviews = async () => {
-      const response = await getProductFeedbacks(id);
+     // const response = await getProductFeedbacks(id);
       // Calculate average rating
-      const totalRating = response.reduce(
-        (acc, review) => acc + review.rate,
-        0
-      );
-      const averageRating = totalRating / response.length;
-      setAverageRating(averageRating);
+     // const totalRating = response.reduce(
+     //   (acc, review) => acc + review.rate,
+     //   0
+     // );
+     // const averageRating = totalRating / response.length;
+     // setAverageRating(averageRating);
     };
-    getProductReviews();
+  //  getProductReviews();
   }, [id]);
 
   return (
@@ -358,17 +359,17 @@ const FoodDetails = () => {
                 full
                 outlined
                 isLoading={cartLoading}
-                onClick={() => addCart()}
+           //     onClick={() => addCart()}
               />
               <Button text="Order Now" full 
-               onClick={() => addCart()}
+            //   onClick={() => addCart()}
               />
             </ButtonWrapper>
       
           </Details>
         </Wrapper>
       )}
-      <ReviewList productId={id} />
+      {/* <ReviewList productId={id} /> */}
     </Container>
   );
 };
