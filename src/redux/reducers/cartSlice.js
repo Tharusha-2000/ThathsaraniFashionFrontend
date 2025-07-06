@@ -17,14 +17,16 @@ export const cartSlice = createSlice({
     },
     updateCartRed: (state, action) => {
       const item = action.payload;
-      const index = state.cart.findIndex((i) => i.cartId == item.cartId);
+      console.log("Updating cart item:", item);
+      const index = state.cart.findIndex((i) => i._id == item._id);
       console.log(index);
       if (index >= 0) {
         state.cart[index] = item;
       }
     },
     removeFromCartRed: (state, action) => {
-      state.cart = state.cart.filter((item) => item.cartId !== action.payload);
+      state.cart = state.cart.filter((item) => item._id !== action.payload);
+
     },
 
     clearCart: (state) => {

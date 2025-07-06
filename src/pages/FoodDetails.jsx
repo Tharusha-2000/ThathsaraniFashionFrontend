@@ -210,7 +210,7 @@ const FoodDetails = () => {
       unitPrice: product?.sizes.find(
         (sizeItem) => sizeItem.size === selectedSize
       ).price,
-      pizzaSize: selectedSize,
+      clothSize: selectedSize,
       count: selectedQty,
     };
 
@@ -248,7 +248,8 @@ const FoodDetails = () => {
     } else {
       await addToCart( cartItem)
         .then((res) => {
-          dispatch(addToCartRed(res.data));
+          console.log(res.data);
+          dispatch(addToCartRed(res.data.cartItem));
           setCartLoading(false);
           navigate("/cart");
         })
@@ -359,10 +360,10 @@ const FoodDetails = () => {
                 full
                 outlined
                 isLoading={cartLoading}
-           //     onClick={() => addCart()}
+                onClick={() => addCart()}
               />
               <Button text="Order Now" full 
-            //   onClick={() => addCart()}
+                onClick={() => addCart()}
               />
             </ButtonWrapper>
       

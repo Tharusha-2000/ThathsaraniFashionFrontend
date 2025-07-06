@@ -103,7 +103,7 @@ export const deleteProduct = async (productId) => {
 
 
 
-export const getCartByUserId = async (userId) => {
+export const getCartByUserId = async () => {
   const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
@@ -111,20 +111,20 @@ export const getCartByUserId = async (userId) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  return await API.get(`Cart/byUser/${userId}`, config);
+  return await API.get(`cart`, config);
 };
 
-export const getCart = async () => {
-  const token = localStorage.getItem("thathsarani-token");
-  console.log(token);
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+// export const getCart = async () => {
+//   const token = localStorage.getItem("thathsarani-token");
+//   console.log(token);
+//   const config = {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   };
 
-  return await API.get(`Cart`, config);
-};
+//   return await API.get(`Cart`, config);
+// };
 
 export const addToCart = async (data) => {
   const token = localStorage.getItem("thathsarani-token");
@@ -134,7 +134,7 @@ export const addToCart = async (data) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const res = await API.post(`Cart/`, data, config);
+  const res = await API.post(`cart/`, data, config);
   return res;
 };
 
@@ -147,9 +147,25 @@ export const updateFromCart = async ({ cartId, count }) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const response = await API.put(`Cart/${cartId}?count=${count}`, config);
+  const response = await API.put(`cart/${cartId}`,data, config);
+  console.log(response);
   return response.data;
 };
+
+export const removeCart = async (cartId) => {
+
+  const token = localStorage.getItem("thathsarani-token");
+  console.log(token);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const response = await API.delete(`cart/${cartId}`, config);
+  console.log(response);
+  return response.data;
+};
+
 
 export const updateItemOnCart = async (data) => {
   const token = localStorage.getItem("thathsarani-token");
@@ -191,7 +207,7 @@ export const createOrder = async (data) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const response = await API.post(`Order`, data, config);
+  const response = await API.post(`order`, data, config);
   return response;
 };
 
@@ -249,11 +265,19 @@ export const getClientSecret = async (amount) =>{
 }
 
 export const updatePaymentState = async (data) => {
-  try {
-    await API.put(`Order/byOrderId/${data}?paymentStatus=true`);
-  } catch (e) {
-    console.log(e);
-  }
+    const token = localStorage.getItem("thathsarani-token");
+    console.log(token);
+    console.log(data);
+    const payload = {
+      paymentStatus: true, // Correct syntax for the request body
+    };
+   const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }; 
+    await API.put(`byOrderId/${data}`,payload,config);
+ 
 }
 
 

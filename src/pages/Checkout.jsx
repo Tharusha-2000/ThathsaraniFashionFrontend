@@ -23,7 +23,7 @@ import bgImg from "../utils/Images/Header.png";
 
 
 const stripePromise = loadStripe(
-  "pk_test_51QLb3dCtgNr9CP7sSpK2xhyHNZ9GXIdaX90sOFF67neyqDekhdG201u6vuEDdFjoNr13TqlXN7B7YvylE0rA0cty00Ch4ol5nw"
+  "pk_test_51RhgjcRqXim1loUqcUeESdJaN0ocKgDqU25MOvjTmlXmwtTLN2tROunz6YbQ6Y10e8BVusuMQmz0dubs3X5OS4nv00nCGNpBGp"
 );
 
 import { useDispatch, useSelector } from "react-redux";
@@ -45,6 +45,7 @@ const PaymentForm = (props) => {
 
   const handleCardHolderNameChange = (event) => {
     setCardHolderName(event.target.value);
+
   };
 
   const handleSubmit = async (event) => {
@@ -53,11 +54,49 @@ const PaymentForm = (props) => {
     if (!stripe || !elements) {
       return;
     }
-
+    if (!cardHolderName.trim()) {
+      dispatch(
+        openSnackbar({
+          message: "Card Holder Name is required",
+          severity: "error",
+        })
+      );
+      console.error("Card Holder Name is required");
+      return;
+    }
     const cardNumberElement = elements.getElement(CardNumberElement);
+    const cardExpiryElement = elements.getElement(CardExpiryElement);
+    const cardCvcElement = elements.getElement(CardCvcElement);
 
     if (!cardNumberElement) {
+      dispatch(
+        openSnackbar({
+          message: "Card Number Element not found",
+          severity: "error",
+        })
+      ) 
       console.error("Card Number Element not found");
+      return;
+    }
+    if (!cardExpiryElement) {
+      dispatch(
+        openSnackbar({
+          message: "Card Expiry Element not found",
+          severity: "error",
+        })
+      );
+      console.error("Card Expiry Element not found");
+      return;
+    }
+  
+    if (!cardCvcElement) {
+      dispatch(
+        openSnackbar({
+          message: "Card CVC Element not found",
+          severity: "error",
+        })
+      );
+      console.error("Card CVC Element not found");
       return;
     }
 
@@ -83,7 +122,8 @@ const PaymentForm = (props) => {
       );
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
       console.log("Payment succeeded!", paymentIntent);
-
+      console.log("Payment Intent ID:", paymentIntent.id);
+      console.log("Payment Intent Amount:",props.OrderId);
       updatePaymentState(props.OrderId);
 
       for (let i = 0; i < cartIds.length; i++) {
@@ -228,7 +268,7 @@ const PaymentForm = (props) => {
               <br />
             </div>
 
-            {/* <div className="form-check form-switch">
+                { /* <div className="form-check form-switch">
                   <label
                     className="form-check-label ml-0"
                     htmlFor="flexSwitchCheckDefault"
@@ -242,6 +282,7 @@ const PaymentForm = (props) => {
                     id="flexSwitchCheckDefault"
                   />
                 </div> */}
+
             <div className="form-check form-check-inline">
               <input
                 className="form-check-input mt-2"
@@ -323,6 +364,7 @@ const Checkout = (prop1) => {
   const { totalAmount } = location.state || {};
   const { cartIds } = location.state || {};
   const { orderId } = location.state || {};
+  console.log("Checkout props:", totalAmount,cartIds, orderId);
 
   const LkrValue = parseInt(totalAmount, 10);
   const usdValue = LkrValue / 296.75;
@@ -330,6 +372,7 @@ const Checkout = (prop1) => {
 
   const [clientSecret, setClientSecret] = useState(null);
   const total1 = prop1.totalPaymentAmount;
+  console.log("Total Payment Amount:", total1);
   React.useEffect(() => {
       const fetchClientSecret = async () => {
         try{

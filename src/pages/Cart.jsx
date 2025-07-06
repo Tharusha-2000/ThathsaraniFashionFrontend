@@ -165,8 +165,8 @@ const Cart = () => {
   const [reload, setReload] = useState(false);
   const [buttonLoad, setButtonLoad] = useState(false);
   const [deliveryDetails, setDeliveryDetails] = useState({
-    firstName: "",
-    lastName: "",
+    fname: "",
+    lname: "",
     emailAddress: "",
     phoneNumber: "",
     completeAddress: "",
@@ -181,18 +181,13 @@ const Cart = () => {
 
   const getProducts = async () => {
     setLoading(true);
-
-    if (cart.length > 0) {
-      const ids = cart.map((item) => item.cartId);
-      setCartIds(ids); // Update state with cartIds
-      setLoading(false);
-      return;
-    } else {
       try {
+        setLoading(true);
         const userid = currentUser.id;
-        const response = await getCartByUserId(userid);
-      
-        dispatch(fetchCartRed(response.data));
+        const response = await getCartByUserId();
+        console.log("Cart Response:", response.data);
+        dispatch(fetchCartRed(response.data.cartItems));
+        setCartIds(response.data.cartItems.map(item => item._id)); 
       } catch (error) {
         if (error.response && error.response.status === 404) {
           dispatch(fetchCartRed([])); // Clear the cart on 404
@@ -202,7 +197,7 @@ const Cart = () => {
       } finally {
         setLoading(false);
       }
-    }
+    
   };
 
   const calculateSubtotal = () => {
@@ -226,8 +221,8 @@ const Cart = () => {
     setButtonLoad(true);
     try {
       const isDeliveryDetailsFilled =
-        deliveryDetails.firstName &&
-        deliveryDetails.lastName &&
+        deliveryDetails.fname &&
+        deliveryDetails.lname &&
         deliveryDetails.address &&
         deliveryDetails.phoneNo &&
         deliveryDetails.email &&
@@ -276,9 +271,10 @@ const Cart = () => {
       console.log("User ID:", userId);
 
       const orderDetails = {
+
         userId: userId,
-        fName: deliveryDetails.firstName,
-        lName: deliveryDetails.lastName,
+        fName: deliveryDetails.fname,
+        lname: deliveryDetails.lname,
         email: deliveryDetails.email,
         phoneNum: deliveryDetails.phoneNo,
         address: deliveryDetails.address,
@@ -287,48 +283,25 @@ const Cart = () => {
         date: new Date().toDateString(),
         totalPrice: totalAmount,
         postalcode: deliveryDetails.postalcode,
+        cartItems: cart.map((item) => ({
+          productId: item.productId,
+          clothSize: item.clothSize,
+          count: item.count,
+          unitPrice: item.unitPrice,
+        })),
       };
 
-      console.log("Order Details:", orderDetails);
+      
 
       const response = await createOrder(orderDetails);
       
-      console.log("Order Response:", response);
-      if (response.status === 201) {
-        console.log(response.data.orderId);
-        for (let i = 0; i < cart.length; i++) {
-          const cartItem = cart[i];
-          const product = {
-            orderId: response.data.orderId, // This should already be set from createOrder
-            productId: cartItem.productId,
-            pizzaSize: cartItem.pizzaSize,
-            count: cartItem.count,
-          };
-
-          try {
-            setProduct(product); // Ensure this happens synchronously
-            console.log("Product:", product);
-
-            const res = await storeOrderProduct(product); // Wait for each store operation
-            console.log("Product Response:", res);
-          } catch (error) {
-            console.error(`Error storing product for cart item ${i}:`, error);
-            dispatch(
-              openSnackbar({
-                message: `Failed to store product: ${cartItem.productId}`,
-                severity: "error",
-              })
-            );
-            return; // Exit if there's a critical error
-          }
-        }
-
-        // Only navigate after completing the loop
+  
+       if (response.status === 201) {
         navigate("/checkout", {
           state: {
             totalAmount: totalAmount2,
             cartIds: cartIds,
-            orderId: response.data.orderId, // Safely access this value
+            orderId:response.data.newOrder._id, // Safely access this value
           },
         });
       }
@@ -356,8 +329,8 @@ const Cart = () => {
         cartId: id,
         count: updatedCount,
       });
-
-      dispatch(updateCartRed(res));
+      console.log("Update Response:", res);
+      dispatch(updateCartRed(res.updatedCartItem));
       setReload(!reload);
     } catch (err) {
       setReload(!reload);
@@ -374,9 +347,6 @@ const Cart = () => {
     try {
       await deleteFromCart(cartId);
       dispatch(removeFromCartRed(cartId));
-      // setProducts((prevItems) =>
-      //   prevItems.filter((item) => item.cartId !== cartId)
-      // );
     } catch (err) {
       dispatch(
         openSnackbar({
@@ -391,31 +361,21 @@ const Cart = () => {
   const getUserProfile = async (userId) => {
     try {
 
-      const response = await fetch(`https://localhost:7000/api/User/${userId}`);
+      const response = await getUserById();
+      console.log("API Response:", response);
+      const userProfile = response.user; // Parse the JSON response
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const userProfileArray = await response.json(); // Parse the JSON response
-
-      console.log("Full API Response:", userProfileArray);
-
-      // Check if the array has data
-      if (userProfileArray.length > 0) {
-        const userProfile = userProfileArray[0]; // Access the first element in the array
+      console.log("Full API Response:", userProfile);
 
         // Display the required fields in the console
         console.log("User Profile Data:");
-        console.log(`First Name: ${userProfile.firstName}`);
-        console.log(`Last Name: ${userProfile.lastName}`);
+        console.log(`First Name: ${userProfile.fname}`);
+        console.log(`Last Name: ${userProfile.lname}`);
         console.log(`Email: ${userProfile.email}`);
         console.log(`Phone Number: ${userProfile.phoneNo}`);
 
         return userProfile;
-      } else {
-        console.error("User profile array is empty");
-        return null;
-      }
+      
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
       return null;
@@ -425,7 +385,7 @@ const Cart = () => {
   // Example usage
   const autofillAddress = async () => {
     const userId = currentUser.id; // Replace with the actual user ID
-    const userProfile = await getUserProfile(userId);
+    const userProfile = await getUserProfile();
     if (userProfile) {
       setDeliveryDetails({
         ...userProfile, // Autofill form details with the user profile
@@ -457,16 +417,17 @@ const Cart = () => {
                     <TableItem bold>Subtotal</TableItem>
                     <TableItem></TableItem>
                   </Table>
-                  {cart.map((item) => (
-                    <Table key={item.cartId}>
+                  {cart.map((item,index) => (
+                    <Table key={item?._id}>
                       <TableItem flex>
                         <Product>
-                          <TableItem>{item.cartId}</TableItem>
-
-                          <Img src={item?.productImg} />
+                          {/* <TableItem>{item?._id}</TableItem> */}
+                          <TableItem>{index + 1}</TableItem> 
+                          <Img src={item?.productId?.imageUrl} />
                           <Details>
-                            <Protitle>{item?.productName}</Protitle>
-                            <ProDesc>{item?.pizzaSize}</ProDesc>
+                            <Protitle>{item?.productId?.name}</Protitle>
+                            <ProDesc>{item?.productId?.categories}</ProDesc>
+                            <ProDesc>{item?.clothSize}</ProDesc>
                           </Details>
                         </Product>
                       </TableItem>
@@ -480,7 +441,7 @@ const Cart = () => {
                             }}
                             onClick={() => {
                               if (item?.count > 1) {
-                                updateQuntity(item?.cartId, item?.count - 1);
+                                updateQuntity(item?._id, item?.count - 1);
                               }
                             }}
                           >
@@ -493,8 +454,8 @@ const Cart = () => {
                               flex: 1,
                             }}
                             onClick={() => {
-                              if (item?.count < 10) {
-                                updateQuntity(item?.cartId, item?.count + 1);
+                              if (item?.count < 30) {
+                                updateQuntity(item?._id, item?.count + 1);
                               }
                             }}
                           >
@@ -510,7 +471,7 @@ const Cart = () => {
                       <TableItem>
                         <DeleteOutline
                           sx={{ color: "red" }}
-                          onClick={() => removeCart(item?.cartId)}
+                          onClick={() => removeCart(item?._id)}
                         />
                       </TableItem>
                     </Table>
@@ -532,22 +493,22 @@ const Cart = () => {
                         <TextInput
                           small
                           placeholder="First Name"
-                          value={deliveryDetails.firstName}
+                          value={deliveryDetails.fname}
                           handelChange={(e) =>
                             setDeliveryDetails({
                               ...deliveryDetails,
-                              firstName: e.target.value,
+                              fname: e.target.value,
                             })
                           }
                         />
                         <TextInput
                           small
                           placeholder="Last Name"
-                          value={deliveryDetails.lastName}
+                          value={deliveryDetails.lname}
                           handelChange={(e) =>
                             setDeliveryDetails({
                               ...deliveryDetails,
-                              lastName: e.target.value,
+                              lname: e.target.value,
                             })
                           }
                         />
