@@ -7,6 +7,7 @@ import { GetFeedbackByOrderId } from "../../api";
 
 const FeedbackList = ({ userId, orderId }) => {
   const [feedback, setFeedback] = useState([]);
+  const [data, setData] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,8 +17,9 @@ const FeedbackList = ({ userId, orderId }) => {
         const response = await  GetFeedbackByOrderId(orderId);
 
         console.log("API response:", response.data);
-        const feedbackArray = response.data.$values || [response.data];
+        const feedbackArray = response.data.feedback.feedback.$values || [response.data.feedback.feedback];
         setFeedback(feedbackArray);
+        setData(response.data.feedback);
         console.log("Fetched feedback:", feedbackArray);
       } catch (error) {
         console.error("Error fetching feedback:", error);
@@ -36,9 +38,9 @@ const FeedbackList = ({ userId, orderId }) => {
       {feedback.length === 0 ? (
         <p className="text-center pt-2">No Feedback Yet from you.</p>
       ) : (
-        feedback.map((item, index) => (
-          <FeedbackItem key={index} item={item} />
-        ))
+       
+          <FeedbackItem item={data} /> 
+        
       )}
     </div>
   );

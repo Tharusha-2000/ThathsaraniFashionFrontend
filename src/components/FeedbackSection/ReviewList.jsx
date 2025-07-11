@@ -13,7 +13,7 @@ const ReviewList = ({ productId }) => {
     const getProductReviews = async () => {
       try {
         const response = await getProductFeedbacks(productId);
-        setReviews(response);
+        setReviews(response.data.ratings);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -40,7 +40,7 @@ const ReviewList = ({ productId }) => {
         {/* Map reviews */}
         {!loading &&
           reviews.map((item) => (
-            <ReviewItem key={item.feedBackId} item={item} />
+            <ReviewItem key={item.orderId} item={item} />
           ))}
       </div>
     </div>

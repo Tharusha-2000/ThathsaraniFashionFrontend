@@ -279,16 +279,20 @@ const FoodDetails = () => {
 
   useEffect(() => {
     const getProductReviews = async () => {
-     // const response = await getProductFeedbacks(id);
-      // Calculate average rating
-     // const totalRating = response.reduce(
-     //   (acc, review) => acc + review.rate,
-     //   0
-     // );
-     // const averageRating = totalRating / response.length;
-     // setAverageRating(averageRating);
+     console.log("Fetching product reviews for ID:", id); 
+     const response = await getProductFeedbacks(id);
+     console.log("Product reviews:", response.data.ratings.rating );
+     const ratings = response.data.ratings;
+     const validRatings = ratings.filter((review) => review.rating > 0);
+
+     // Calculate average rating
+     const totalRating = validRatings.reduce((acc, review) => acc + review.rating, 0);
+     const averageRating = validRatings.length > 0 ? totalRating / validRatings.length : 0;
+
+     setAverageRating(averageRating);
+     console.log("Average Rating:", averageRating);
     };
-  //  getProductReviews();
+    getProductReviews();
   }, [id]);
 
   return (
@@ -370,7 +374,7 @@ const FoodDetails = () => {
           </Details>
         </Wrapper>
       )}
-      {/* <ReviewList productId={id} /> */}
+      <ReviewList productId={id} />
     </Container>
   );
 };

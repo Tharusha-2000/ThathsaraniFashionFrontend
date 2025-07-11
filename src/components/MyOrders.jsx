@@ -1,112 +1,127 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Swal from "sweetalert2";
-import PizzaIcon from "../utils/Images/food-delivery.png";
-import Button from "../components/Button";
 import PropTypes from "prop-types";
-import "./MyOrders.css";
+import styled from "styled-components";
+import Swal from "sweetalert2";
+import PizzaIcon from "../utils/Images/clothDeliveryicon.png";
+import Button from "../components/Button";
 import FeedBackModal from "./FeedbackSection/FeedBackModal";
 import FeedbackForm from "./FeedbackSection/FeedbackForm";
 import FeedbackList from "./FeedbackSection/FeedbackList";
 import {
   fetchOrdersByUserId,
-  getOrderProductByOrderId,
-  getProductById,
 } from "../api";
+import "./MyOrders.css";
+
+const Details = styled.div`
+  max-width: 160px;
+  @media (max-width: 700px) {
+    max-width: 60px;
+  }
+`;
+const Protitle = styled.div`
+  color: ${({ theme }) => theme.primary};
+  font-size: 16px;
+  font-weight: 500;
+`;
+const ProDesc = styled.div`
+  font-size: 14px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.text_primary};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+const Product = styled.div`
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+const Img = styled.img`
+  height: 80px;
+  width: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+`;
+const TableItem = styled.div`
+  font-size: 14px;
+  font-weight: 500;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  max-width: 600px;
+  border-radius: 8px;
+  position: relative;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+`;
 
 const MyOrders = ({ userId }) => {
   const [orders, setOrders] = useState([]);
-  const [orderProducts, setOrderProducts] = useState({});
-  const [products, setProducts] = useState({});
+  const [loading, setLoading] = useState(true);
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [detailsModalOrder, setDetailsModalOrder] = useState(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetchOrdersByUserId(userId);
-        const userOrders = response.data
-          .filter((order) => order.paymentStatus === true)
-          .map((order) => ({
-            orderId: order.orderId,
+        const response = await fetchOrdersByUserId();
+        const userOrders = response.data.orders
+          .filter(order => order.paymentStatus === true)
+          .map((order, index) => ({
+            orderDefaultId: index + 1,
+            orderId: order._id ,
+            cartItems: order.cartItems,
             date: new Date(order.date),
             totalPrice: order.totalPrice,
             orderStatus: order.orderStatus,
           }))
-          .sort((a, b) => b.date - a.date); // Sort orders by date, latest first
-
-        console.log("User orders:", userOrders);
-
+          .sort((a, b) => b.date - a.date);
         setOrders(userOrders);
-        Swal.close();
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchOrders();
   }, [userId]);
 
-  useEffect(() => {
-    const fetchOrderProducts = async () => {
-      try {
-        const orderProductsData = {};
-        const productsData = {};
-
-        for (const order of orders) {
-          const response = await getOrderProductByOrderId(order.orderId);
-
-          console.log(
-            "Order products for order",
-            order.orderId,
-            ":",
-            response.data
-          );
-          orderProductsData[order.orderId] = response.data;
-
-          for (const orderProduct of response.data) {
-            if (!productsData[orderProduct.productId]) {
-              const productResponse = await getProductById(
-                orderProduct.productId
-              );
-              productsData[orderProduct.productId] = productResponse.data.name;
-            }
-          }
-        }
-
-        setOrderProducts(orderProductsData);
-        setProducts(productsData);
-      } catch (error) {
-        console.error("Error fetching order products:", error);
-      }
-    };
-
-    if (orders.length > 0) {
-      fetchOrderProducts();
-    }
-  }, [orders]);
-
   const handleGiveFeedback = (order) => {
+    console.log("Selected Order for Feedback:", order);
     setSelectedOrder(order);
     setShowFeedbackForm(true);
     sessionStorage.setItem("OrderId", JSON.stringify(order.orderId));
     sessionStorage.setItem("UserId", JSON.stringify(userId));
-    setShowFeedbackForm(true);
-    console.log("Order selected:", order);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseFeedbackModal = () => {
     setShowFeedbackForm(false);
     setSelectedOrder(null);
     sessionStorage.removeItem("OrderId");
     sessionStorage.removeItem("UserId");
-  };
-
-  const handleSaveFeedback = (feedback) => {
-    console.log("Feedback saved:", feedback);
   };
 
   return (
@@ -114,81 +129,80 @@ const MyOrders = ({ userId }) => {
       {loading ? (
         <div className="row p-4 rounded-4 sec shadow bg-grey mt-4 mb-4 ml-4 mr-4">
           <div className="col-lg-12 mt-5 mb-4">
-            <p className="text-center fs-10 font-family-Inter">Loading...</p>
+            <p className="text-center">Loading...</p>
           </div>
         </div>
-      ) :orders.length > 0 ? (
-        orders.map((order) => (
-          <div
-            key={order.orderId}
-            className="row p-5 rounded-4 sec shadow m-4 h-auto"
-          >
-            <div className="col-lg-1 col-md-2 col-sm-3 align-items-center justify-content-center m-auto d-grid pb-1">
-              <img
-                src={PizzaIcon}
-                alt="PizzaIcon"
-                className="VehicleIcon align-items-center justify-content-center m-auto"
-                style={{ width: "50px", height: "50px" }} // Adjust the size as needed
+      ) : orders.length > 0 ? (
+        orders.map(order => (
+          <div key={order.orderId} className="row p-4 rounded-4 sec shadow m-4 h-auto">
+            <div className="col-lg-1 d-flex align-items-center justify-content-center">
+              <img src={PizzaIcon} alt="Icon" style={{ width: "50px", height: "50px" }} />
+            </div>
+            <div className="col-lg-3 d-grid">
+              <h6>Order ID: {order.orderDefaultId}</h6>
+              <p>{order.date.toLocaleDateString()}</p>
+              <p>Total Price: LKR {order.totalPrice}.00</p>
+            </div>
+            <div className="col-lg-2 d-flex justify-content-center" >
+            <Button
+                text="View Details"
+                type="primary"
+                onClick={() => setDetailsModalOrder(order)}
+              
               />
             </div>
-            <div className="col-lg-3 col-md-3 col-sm-4 align-items-center justify-content-center m-auto d-grid">
-              <h6 className="align-items-center justify-content-center m-auto">
-                Order ID: {order.orderId}
-              </h6>
-              <p className="align-items-center justify-content-center m-auto">
-                {order.date.toLocaleDateString()}
-              </p>
-              <p className="align-items-center justify-content-center m-auto">
-                Total Price: LKR {order.totalPrice}.00
-              </p>
+            <div className="col-lg-2 d-grid justify-content-center" style={{ marginLeft: "70px" }}>
+              <h6>Status</h6>
+              <p>{order.orderStatus}</p>
             </div>
-            <div className="col-lg-4 col-md-3 col-sm-4 align-items-center justify-content-center m-auto d-grid">
-              {orderProducts[order.orderId] &&
-                orderProducts[order.orderId].map((orderProduct) => (
-                  <p
-                    key={orderProduct.orderProductId}
-                    className="align-items-center justify-content-center m-auto"
-                  >
-                    {products[orderProduct.productId]} ({orderProduct.count}
-                    {orderProduct.pizzaSize})
-                  </p>
-                ))}
-            </div>
-            <div className="col-lg-1 col-md-3 col-sm-4 align-items-center justify-content-center m-auto d-grid">
-              <h6 className="align-items-center justify-content-center m-auto">
-                Status
-              </h6>
-              <p> {order.orderStatus}</p>
-            </div>
-            <div className="col col-lg-2 col-md-3 col-sm-4 col-12 align-items-center justify-content-center d-flex m-auto pt-1 ">
-              <div className="col-lg-2 col-md-2 col-sm-3 col-4 m-0 align-items-center justify-content-center d-flex m-auto w-auto">
-                <Button
-                  text="Add Review"
-                  type="primary"
-                  onClick={() => handleGiveFeedback(order)}
-                  isDisabled={order.orderStatus !== "Completed"} // Disable button if order status is not "Completed"
-                />
-              </div>
+            <div className="col-lg-2 d-flex justify-content-center">
+              <Button
+                text="Add Review"
+                type="primary"
+                onClick={() => handleGiveFeedback(order)}
+                isDisabled={order.orderStatus !== "Completed"}
+              />
             </div>
           </div>
         ))
       ) : (
         <div className="row p-4 rounded-4 sec shadow bg-grey mt-4 mb-4 ml-4 mr-4">
           <div className="col-lg-12 mt-5 mb-4">
-            <p className="text-center fs-10 font-family-Inter">
-              No past orders found.
-            </p>
+            <p className="text-center">No past orders found.</p>
           </div>
         </div>
       )}
-
+     {detailsModalOrder && (
+  <ModalOverlay>
+    <ModalContent>
+      <CloseButton onClick={() => setDetailsModalOrder(null)}>×</CloseButton>
+      <h5>Order Details - ID: {detailsModalOrder.orderDefaultId}</h5>
+      <p>Date: {new Date(detailsModalOrder.date).toDateString()}</p>
+      <p>Total Price: LKR {detailsModalOrder.totalPrice}</p>
+      <p>Status: {detailsModalOrder.orderStatus}</p>
+      <h6>Items:</h6>
+      {detailsModalOrder.cartItems.map((item) => (
+        <Product key={item._id}>
+          <Img src={item.productId.imageUrl} alt={item.productId.name} />
+          <Details>
+            <Protitle>{item.productId.name}</Protitle>
+            <ProDesc>Category: {item.productId.categories.join(", ")}</ProDesc>
+            <ProDesc>Size: {item.clothSize}</ProDesc>
+            <ProDesc>Count: {item.count}</ProDesc>
+            <ProDesc>Price: LKR {item.unitPrice}</ProDesc>
+          </Details>
+        </Product>
+      ))}
+    </ModalContent>
+  </ModalOverlay>
+)}
       {showFeedbackForm && selectedOrder && (
-        <FeedBackModal onClose={handleCloseModal}>
+        <FeedBackModal onClose={handleCloseFeedbackModal}>
           <FeedbackForm
             userId={userId}
             orderId={selectedOrder.orderId}
-            onClose={handleCloseModal}
-            onSave={handleSaveFeedback}
+            onClose={handleCloseFeedbackModal}
+            onSave={(feedback) => console.log("Feedback saved:", feedback)}
           />
           <FeedbackList userId={userId} orderId={selectedOrder.orderId} />
         </FeedBackModal>

@@ -21,7 +21,9 @@ const FeedbackForm = ({ userId, orderId, onClose, onSave }) => {
     const checkFeedback = async () => {
       try {
         const response = await GetFeedbackByOrderId(orderId);
-        const feedbackArray = response.data.$values || [response.data];
+        console.log("Feedback response:", response);
+        const feedbackArray = response.data.feedback.feedback;
+        console.log("Feedback array:", feedbackArray);
         setHasFeedback(feedbackArray.length > 0);
       } catch (error) {
         console.error("Error checking feedback:", error);
@@ -53,9 +55,8 @@ const FeedbackForm = ({ userId, orderId, onClose, onSave }) => {
     if (text.trim().length > 0) {
       const newFeedback = {
         orderId,
-        feedbackMessage: text,
-        rate: currentRating,
-        givenDate: new Date().toISOString().split("T")[0],
+        feedback: text,
+        rating: currentRating,
       };
 
       try {

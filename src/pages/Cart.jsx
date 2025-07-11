@@ -427,7 +427,7 @@ const Cart = () => {
                           <Details>
                             <Protitle>{item?.productId?.name}</Protitle>
                             <ProDesc>{item?.productId?.categories}</ProDesc>
-                            <ProDesc>{item?.clothSize}</ProDesc>
+                            <ProSize>{item?.clothSize}</ProSize>
                           </Details>
                         </Product>
                       </TableItem>

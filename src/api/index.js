@@ -286,8 +286,20 @@ export const updatePaymentState = async (data) => {
 
 //API for fetching product reviews
 export const getProductFeedbacks = async (productId) => {
-  const response = await API.get(`/FeedBack/GetProductFeedback/${productId}`);
-  return response.data.$values; // Extract the $values array from the response
+  console.log("Fetching product reviews for ID:", productId);
+  const token = localStorage.getItem("thathsarani-token");
+  console.log(token);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      productId, 
+    },
+  };
+  const response = await API.get(`/rating`,config);
+  console.log(response);
+  return response; 
 };
 
 //API for fetching Feedbacks by order Id
@@ -300,7 +312,7 @@ export const GetFeedbackByOrderId = async (orderId) => {
     },
   };
   const response = await API.get(
-    `/FeedBack/GetFeedbackByOrderId/${orderId}`,
+    `/getFeedbackByOrderId/${orderId}`,
     config
   );
   return response;
@@ -315,8 +327,8 @@ export const SaveProductFeedback = async (newFeedback) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const response = await API.post(
-    `/FeedBack/SaveProductFeedback`,
+  const response = await API.put(
+    `createFeedbackByOrderId`,
     newFeedback,
     config
   );
@@ -324,7 +336,7 @@ export const SaveProductFeedback = async (newFeedback) => {
 };
 
 //API for feching orders by orderId
-export const fetchOrdersByUserId = async (userId) => {
+export const fetchOrdersByUserId = async () => {
   const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
@@ -332,7 +344,7 @@ export const fetchOrdersByUserId = async (userId) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const response = await API.get(`/Order/byUser/${userId}`, config);
+  const response = await API.get(`/getOrderById`, config);
   return response;
 };
 
