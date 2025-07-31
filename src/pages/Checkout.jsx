@@ -16,6 +16,7 @@ import{
   getClientSecret,
   deleteFromCart,
   updatePaymentState,
+  sendEmailToOrderOwner,
 } from "../api";
 import axios from "axios";
 
@@ -123,8 +124,9 @@ const PaymentForm = (props) => {
     } else if (paymentIntent && paymentIntent.status === "succeeded") {
       console.log("Payment succeeded!", paymentIntent);
       console.log("Payment Intent ID:", paymentIntent.id);
-      console.log("Payment Intent Amount:",props.OrderId);
+      console.log("Payment :",props.OrderId);
       updatePaymentState(props.OrderId);
+      
 
       for (let i = 0; i < cartIds.length; i++) {
         console.log(cartIds[i]);
@@ -140,9 +142,10 @@ const PaymentForm = (props) => {
           severity: "success",
         })
       );
-
+     
       // Set the paymentId state here
       setPaymentId(paymentIntent.id);
+     
 
       setTimeout(() => {
         navigate("/orders");

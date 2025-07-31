@@ -14,8 +14,8 @@ const UsersTable = () => {
     const fetchUsers = async () => {
       try {
         const response = await getAllUsers();
-        console.log("Fetched users:jbnm", response.data);
-        setData(response.data);
+        console.log("Fetched users:jbnm", response.data.users);
+        setData(response.data.users);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -67,12 +67,13 @@ const UsersTable = () => {
         accessorKey: "id",
         header: "ID",
         size: 50,
+        Cell: ({ row }) => row.index + 1,
       },
       {
         accessorKey: "fullName",
         header: "Full Name",
         size: 200,
-        Cell: ({ row }) => `${row.original.firstName} ${row.original.lastName}`,
+        Cell: ({ row }) => `${row.original.fname} ${row.original.lname}`,
       },
       {
         accessorKey: "email",
@@ -98,8 +99,8 @@ const UsersTable = () => {
             <IconButton
               color="error"
               size="small"
-              onClick={() => handleDelete(row.original.id)}
-            >
+              onClick={() => handleDelete(row.original._id)}
+             >
               <DeleteIcon />
             </IconButton>
           </Box>
@@ -110,7 +111,7 @@ const UsersTable = () => {
   );
 
   return (
-    <Box sx={{ width: "95%", margin: "auto" }}>
+    <Box sx={{ width: "100%", margin: "auto" }}>
       {/* Users Table */}
       <MaterialReactTable
         columns={columns}
@@ -118,7 +119,7 @@ const UsersTable = () => {
         enableRowVirtualization
         muiTableBodyProps={{
           sx: {
-            height: "500px", // Fixed height for virtualization
+            height: "700px",
             overflowY: "auto",
           },
         }}

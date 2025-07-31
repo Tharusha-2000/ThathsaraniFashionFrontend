@@ -50,7 +50,7 @@ const Contact = () => {
               <FaMapMarkerAlt size={30} className="info-icon" />
               <p className="info-title">Location</p>
             </div>
-            <p className="info-details">No 121, Galle Road, Moratuwa</p>
+            <p className="info-details">No 121, Hospital Road, Negombo</p>
           </div>
 
           <div className="info-item">
@@ -58,7 +58,7 @@ const Contact = () => {
               <FaPhoneAlt size={30} className="info-icon" />
               <p className="info-title">Phone</p>
             </div>
-            <p className="info-details">0332273580</p>
+            <p className="info-details">0779706936</p>
           </div>
 
           <div className="info-item">

@@ -36,7 +36,8 @@ function Orders() {
     const fetchOrders = async () => {
       try {
         const response = await getOrders();
-        setOrders(response.data);
+        console.log("Fetched orders:", response);
+        setOrders(response.data.orders);
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch orders:", error);
@@ -48,8 +49,10 @@ function Orders() {
 
   const handleSave = async (orderId, index) => {
     try {
-      const updatedOrder = { ...orders[index], orderStatus: selectedStatus };
-      await updateOrder(orderId, updatedOrder);
+      const updatedStatus =  selectedStatus;
+      console.log("Updating order:", updatedStatus);
+      console.log("Order ID:", orderId);
+      await updateOrder(orderId, updatedStatus);
 
       // Update local state
       setOrders((prevOrders) =>
@@ -65,16 +68,19 @@ function Orders() {
   };
 
   const handleViewProducts = async (orderId) => {
+    console.log("Selected Order ID:", orderId);
     setLoadingProducts(true);
-    setModalOpen(true);
-    try {
-      const response = await handelViewOrder(orderId);
-      setProductDetails(response.data);
-      setLoadingProducts(false);
-    } catch (error) {
-      console.error("Failed to fetch product details:", error);
-      setLoadingProducts(false);
+    const selectedOrder = orders.find((order) => order._id === orderId);
+    console.log("Selected Order:", selectedOrder);
+    if (selectedOrder) {
+      setProductDetails(selectedOrder.cartItems);
+      console.log("Selected Order Details:", productDetails);
+    } else {
+      setProductDetails([]);
     }
+    setLoadingProducts(false); 
+    setModalOpen(true);
+  
   };
 
   const getStatusColor = (status) => {
@@ -116,7 +122,8 @@ function Orders() {
                   <TableHead>
                     <TableRow>
                       <TableCell>Order</TableCell>
-                      <TableCell>Id</TableCell>
+                      <TableCell>Referance No</TableCell>
+                      <TableCell>Username</TableCell>
                       <TableCell>Total Amount</TableCell>
                       <TableCell>Shipping Address</TableCell>
                       <TableCell>Status</TableCell>
@@ -126,9 +133,10 @@ function Orders() {
                   </TableHead>
                   <TableBody>
                     {orders.map((order, index) => (
-                      <TableRow key={order.orderId}>
+                      <TableRow key={order._id}>
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>{order.orderId}</TableCell>
+                        <TableCell>{order._id}</TableCell>
+                        <TableCell>{order.fName} {order.lname}</TableCell>
                         <TableCell>{order.totalPrice}</TableCell>
                         <TableCell>
                           {order.address}, {order.postalcode}
@@ -158,7 +166,7 @@ function Orders() {
                         <TableCell>
                           {editIndex === index ? (
                             <IconButton
-                              onClick={() => handleSave(order.orderId, index)}
+                              onClick={() => handleSave(order._id, index)}
                             >
                               <CheckCircleOutlinedIcon />
                             </IconButton>
@@ -170,8 +178,8 @@ function Orders() {
                         </TableCell>
                         <TableCell>
                           <IconButton
-                            onClick={() => handleViewProducts(order.orderId)}
-                          >
+                             onClick={() => handleViewProducts(order._id)} 
+                           >
                             <VisibilityOutlinedIcon />
                           </IconButton>
                         </TableCell>
@@ -186,49 +194,51 @@ function Orders() {
           </Box>
         </Box>
       </Grid>
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Typography variant="h6" mb={2}>
-            Product Details
-          </Typography>
-          {loadingProducts ? (
-            <Typography>Loading product details...</Typography>
-          ) : productDetails.length ? (
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Product ID</TableCell>
-                  <TableCell>Size</TableCell>
-                  <TableCell>Count</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {productDetails.map((product) => (
-                  <TableRow key={product.productId}>
-                    <TableCell>{product.productId}</TableCell>
-                    <TableCell>{product.pizzaSize}</TableCell>
-                    <TableCell>{product.count}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <Typography>No product details available</Typography>
-          )}
-        </Box>
-      </Modal>
-    </Grid>
+          <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: 400,
+                  bgcolor: "background.paper",
+                  boxShadow: 24,
+                  p: 4,
+                }}
+              >
+                <Typography variant="h6" mb={2}>
+                  Product Details
+                </Typography>
+                {loadingProducts ? (
+                  <Typography>Loading product details...</Typography>
+                ) : productDetails.length ? (
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Product Name</TableCell>
+                        <TableCell>Size</TableCell>
+                        <TableCell>Count</TableCell>
+                        <TableCell>Unit Price</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {productDetails.map((product) => (
+                        <TableRow key={product._id}>
+                          <TableCell>{product.productId.name}</TableCell>
+                          <TableCell>{product.clothSize}</TableCell>
+                          <TableCell>{product.count}</TableCell>
+                          <TableCell>LKR {product.unitPrice} </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <Typography>No product details available</Typography>
+                )}
+              </Box>
+            </Modal>
+          </Grid>
   );
 }
 

@@ -68,8 +68,8 @@ function AdminOverview() {
 
     const fetchUsers = async () => {
       try {
-        const response = await getAllUsers();
-        setUsers(response.data);
+    //    const response = await getAllUsers();
+    //    setUsers(response.data);
         console.log("Fetched users:", response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -78,8 +78,8 @@ function AdminOverview() {
 
     const fetchOrders = async () => {
       try {
-        const response = await getAllOrders();
-        setOrders(response.data);
+     //   const response = await getAllOrders();
+    //    setOrders(response.data);
         console.log("Fetched orders:", response.data);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -88,8 +88,8 @@ function AdminOverview() {
 
     const fetchFeedbacks = async () => {
       try {
-        const response = await getAllFeedback();
-        setFeedbacks(response.data.$values || []);
+     //   const response = await getAllFeedback();
+   //     setFeedbacks(response.data.$values || []);
         console.log("Fetched feedbacks:", response.data.$values);
       } catch (error) {
         console.error("Error fetching feedbacks:", error);
@@ -98,9 +98,9 @@ function AdminOverview() {
 
     const fetchOrderDetails = async () => {
       try {
-        const response = await getallOrderDetails();
+     //   const response = await getallOrderDetails();
         if (response && response.data) {
-          setOrderDetails(response.data);
+    //      setOrderDetails(response.data);
           console.log("Fetched order details:", response.data);
         } else {
           console.error("Invalid response for order details:", response);

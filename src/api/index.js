@@ -14,8 +14,17 @@ export const UserSignUp = async (data) =>{
   console.log('Response from API:', response);
   return response;
 }
+
+
 export const SendEmail = async (data) =>
   await API.post(`generateOTP&sendmail`, data);
+
+
+export const verifyOTP = async (otp) => {
+  const response = await API.get(`verifyOTP?&code=${otp}`);
+  return response;
+  
+}; 
 
 export const PasswordChange = async (data) =>
   await API.put(`resetPassword`, data);
@@ -24,6 +33,7 @@ export const UserCreate = async (data) => {
   const response = await API.post(`User`, data);
   return response;
 };
+
 
 export const getUserById = async () => {
   const token = localStorage.getItem("thathsarani-token");
@@ -233,7 +243,7 @@ export const getOrders = async () => {
       Authorization: `Bearer ${token}`,
     },
   };
-  return await API.get(`Order`, config);
+  return await API.get(`order`, config);
 };
 
 export const handelViewOrder = async (orderId) => {
@@ -247,7 +257,7 @@ export const handelViewOrder = async (orderId) => {
   return await API.get(`OrderProduct/byOrder/${orderId}`, config);
 };
 
-export const updateOrder = async (orderId, updatedOrder) => {
+export const updateOrder = async (orderId, updatedStatus) => {
   const token = localStorage.getItem("thathsarani-token");
   console.log(token);
   const config = {
@@ -255,7 +265,11 @@ export const updateOrder = async (orderId, updatedOrder) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  return await API.put(`Order/${orderId}`, updatedOrder, config);
+  const data = {
+    orderId,
+    updatedStatus, 
+  };
+  return await API.put(`updateStatusByOrderId`, data , config);
 };
 
 
@@ -280,9 +294,18 @@ export const updatePaymentState = async (data) => {
  
 }
 
+export const sendEmailToOrderOwner = async (data) => {
+  const token = localStorage.getItem("thathsarani-token");
+  console.log(token);
+  console.log(data);
+ const config = {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+}; 
+  await API.put(`sendUserToEmail/${data}`,config);
 
-
-/////////////// review and rating
+}
 
 //API for fetching product reviews
 export const getProductFeedbacks = async (productId) => {
@@ -376,7 +399,7 @@ export const getAllUsers = async () => {
       Authorization: `Bearer ${token}`,
     },
   };
-  return await API.get(`User`, config);
+  return await API.get(`users`, config);
 };
 export const deleteUser = async (id) => {
   const token = localStorage.getItem("thathsarani-token");
@@ -386,7 +409,7 @@ export const deleteUser = async (id) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const response = await API.delete(`User/${id}`, config);
+  const response = await API.delete(`user/${id}`, config);
   return response.data;
 };
 

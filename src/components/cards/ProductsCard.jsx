@@ -205,7 +205,8 @@ const ProductsCard = ({ product }) => {
   return (
     <Card>
       <Top>
-        <Image src={product?.imageUrl} />
+      
+        <Image src={product?.imageUrl} onClick={() => navigate(`/dishes/${product._id}`)}/>
         <Menu>
           <MenuItem onClick={() => addCart(product?.productId)}>
             <ShoppingBagOutlined sx={{ fontSize: "28px" }} />
@@ -214,6 +215,7 @@ const ProductsCard = ({ product }) => {
         <Rate>
           <Rating readOnly value={3.5} sx={{ fontSize: "14px" }} />
         </Rate>
+      
       </Top>
       <Details onClick={() => navigate(`/dishes/${product._id}`)}>
         <Title>{product?.name}</Title>

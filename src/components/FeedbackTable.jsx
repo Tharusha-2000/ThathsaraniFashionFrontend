@@ -1,230 +1,113 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { Box, Typography, Avatar } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
-import { Box, Typography } from "@mui/material";
-import {
-  getAllFeedback,
-  getAllUsers,
-  getAllOrders,
-  getAllProducts,
-  getallOrderDetails,
-} from "../api"; // Import the API functions
+import { getAllOrders } from "../api"; // adjust path
 
 const FeedbackTable = () => {
-  const [feedbacks, setFeedbacks] = useState([]);
-  const [users, setUsers] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [orderDetails, setOrderDetails] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFeedbacks = async () => {
-      try {
-        const response = await getAllFeedback();
-        setFeedbacks(response.data.$values || []);
-        console.log("Fetched feedbacks:", response.data.$values);
-      } catch (error) {
-        console.error("Error fetching feedbacks:", error);
-      }
-    };
-
-    const fetchUsers = async () => {
-      try {
-        const response = await getAllUsers();
-        setUsers(response.data);
-        console.log("Fetched users:", response.data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
     const fetchOrders = async () => {
       try {
-        const response = await getAllOrders();
-        setOrders(response.data);
-        console.log("Fetched orders:", response.data);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      }
-    };
-
-    const fetchProducts = async () => {
-      try {
-        const response = await getAllProducts();
-        setProducts(response.data);
-        console.log("Fetched products:", response.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-    const fetchOrderDetails = async () => {
-      try {
-        const response = await getallOrderDetails();
-        if (response && response.data) {
-          setOrderDetails(response.data);
-          console.log("Fetched order details:", response.data);
+        const response = await getAllOrders(); // adjust if needed
+        console.log("Fetched orders:", response);
+        if (response && response.data && response.data.orders) {
+          setOrders(response.data.orders);
         } else {
-          console.error("Invalid response for order details:", response);
+          console.error("Invalid response:", response);
         }
       } catch (error) {
-        console.error("Error fetching order details:", error);
+        console.error("Error fetching orders:", error);
+      } finally {
+        setLoading(false);
       }
     };
-
-    fetchFeedbacks();
-    fetchUsers();
     fetchOrders();
-    fetchProducts();
-    fetchOrderDetails();
-    setLoading(false);
   }, []);
 
-  // Create a mapping of user IDs to user names
-  const userIdToNameMap = useMemo(() => {
-    const map = {};
-    users.forEach((user) => {
-      map[user.id] = `${user.firstName} ${user.lastName}`;
-    });
-    return map;
-  }, [users]);
-
-  // Create a mapping of order IDs to product IDs
-  const orderIdToProductIdMap = useMemo(() => {
-    const map = {};
-    orderDetails.forEach((orderDetail) => {
-      map[orderDetail.orderId] = orderDetail.productId;
-    });
-    return map;
-  }, [orderDetails]);
-
-  // Create a mapping of product IDs to product names
-  const productIdToNameMap = useMemo(() => {
-    const map = {};
-    products.forEach((product) => {
-      map[product.productId] = product.name;
-    });
-    return map;
-  }, [products]);
-
-  // Create a mapping of order IDs to user IDs
-  const orderIdToUserIdMap = useMemo(() => {
-    const map = {};
-    orders.forEach((order) => {
-      map[order.orderId] = order.userId;
-    });
-    return map;
+  // Flatten cartItems + keep order-level fields
+  const tableData = useMemo(() => {
+    return orders.flatMap((order) =>
+      order.cartItems.map((item) => ({
+        orderId: order._id,
+        userName: `${order.fName} ${order.lname}`,
+        orderStatus: order.orderStatus,
+        feedback: order.feedback || "No feedback",
+        rating: order.rating ?? "N/A",
+        orderDate: order.date,
+        productName: item.productId?.name || "Unknown",
+        productImage: item.productId?.imageUrl || "",
+        clothSize: item.clothSize,
+        unitPrice: item.unitPrice,
+        count: item.count,
+        totalItemPrice: (item.unitPrice * item.count).toFixed(2),
+      }))
+    );
   }, [orders]);
-
-  // Calculate average ratings by product
-  const averageRatings = useMemo(() => {
-    const ratingsMap = {};
-    feedbacks.forEach((feedback) => {
-      const productId = orderIdToProductIdMap[feedback.orderId];
-      if (!ratingsMap[productId]) {
-        ratingsMap[productId] = { totalRating: 0, count: 0 };
-      }
-      ratingsMap[productId].totalRating += feedback.rate;
-      ratingsMap[productId].count += 1;
-    });
-
-    // Ensure all products are included
-    products.forEach((product) => {
-      if (!ratingsMap[product.productId]) {
-        ratingsMap[product.productId] = { totalRating: 0, count: 0 };
-      }
-    });
-
-    return products.map((product) => ({
-      productId: product.productId,
-      productName: product.name,
-      averageRating:
-        ratingsMap[product.productId].count > 0
-          ? (
-              ratingsMap[product.productId].totalRating /
-              ratingsMap[product.productId].count
-            ).toFixed(2)
-          : "No Ratings",
-    }));
-  }, [feedbacks, orderIdToProductIdMap, productIdToNameMap, products]);
 
   const columns = useMemo(
     () => [
       {
-        accessorKey: "feedbackId",
-        header: "Feedback ID",
-        size: 50,
+        accessorKey: "orderId",
+        header: "Order ID",
+        size: 10,
+        Cell: ({ row }) => row.index + 1, 
       },
       {
-        accessorKey: "productId",
-        header: "Product Name",
-        size: 150,
-        Cell: ({ row }) => {
-          const productId = orderIdToProductIdMap[row.original.orderId];
-          return productIdToNameMap[productId] || "Unknown";
-        },
-      },
-      {
-        accessorKey: "userId",
-        header: "User Name",
-        size: 150,
-        Cell: ({ row }) => {
-          const userId = orderIdToUserIdMap[row.original.orderId];
-          return userIdToNameMap[userId] || "Unknown";
-        },
-      },
-      {
-        accessorKey: "feedbackMessage",
-        header: "Feedback Message",
-        size: 300,
-      },
-      {
-        accessorKey: "rate",
-        header: "Rating",
+        accessorKey: "userName",
+        header: "Customer",
         size: 100,
       },
       {
-        accessorKey: "givenDate",
-        header: "Date",
-        size: 150,
-        Cell: ({ cell }) => new Date(cell.getValue()).toLocaleDateString(),
-      },
-    ],
-    [
-      userIdToNameMap,
-      orderIdToProductIdMap,
-      productIdToNameMap,
-      orderIdToUserIdMap,
-    ]
-  );
-
-  const averageRatingColumns = useMemo(
-    () => [
-      {
-        accessorKey: "productId",
-        header: "Product ID",
-        size: 50,
+        accessorKey: "productImage",
+        header: "Product Image",
+        size: 80,
+        Cell: ({ cell }) =>
+          cell.getValue() ? (
+            <Avatar
+              src={cell.getValue()}
+              variant="rounded"
+              sx={{ width: 60, height: 60 }}
+            />
+          ) : (
+            "No Image"
+          ),
       },
       {
         accessorKey: "productName",
-        header: "Product Name",
-        size: 150,
+        header: "Product",
+        size: 100,
       },
       {
-        accessorKey: "averageRating",
-        header: "Average Rating",
+        accessorKey: "unitPrice",
+        header: "Unit Price",
+        size: 90,
+      },
+      {
+        accessorKey: "count",
+        header: "Quantity",
+        size: 90,
+      },
+      {
+        accessorKey: "totalItemPrice",
+        header: "Total Item Price",
+        size: 110,
+      },
+      {
+        accessorKey: "feedback",
+        header: "Feedback",
+        size: 190,
+      },
+      {
+        accessorKey: "rating",
+        header: "Rating",
+        size: 60,
+      },
+      {
+        accessorKey: "orderDate",
+        header: "Order Date",
         size: 100,
-        Cell: ({ cell }) => (
-          <span
-            style={
-              cell.getValue() === "No Ratings"
-                ? { fontStyle: "italic", color: "#888" }
-                : {}
-            }
-          >
-            {cell.getValue()}
-          </span>
-        ),
       },
     ],
     []
@@ -233,42 +116,19 @@ const FeedbackTable = () => {
   return (
     <Box sx={{ width: "95%", margin: "auto" }}>
       <Typography variant="h4" fontWeight="bold" sx={{ mb: 2 }}>
-        All Feedbacks
+        Orders & Feedback Table
       </Typography>
-      {/* Feedback Table */}
       <MaterialReactTable
         columns={columns}
-        data={feedbacks}
+        data={tableData}
         enableRowVirtualization
         muiTableBodyProps={{
           sx: {
-            height: "500px",
+            height: "600px",
             overflowY: "auto",
           },
         }}
-        state={{
-          isLoading: loading,
-        }}
-      />
-
-      {/* Average Ratings Table */}
-      <Typography variant="h4" fontWeight="bold" sx={{ mt: 4, mb: 2 }}>
-        Average Ratings by Product
-      </Typography>
-
-      <MaterialReactTable
-        columns={averageRatingColumns}
-        data={averageRatings}
-        enableRowVirtualization
-        muiTableBodyProps={{
-          sx: {
-            height: "500px",
-            overflowY: "auto",
-          },
-        }}
-        state={{
-          isLoading: loading,
-        }}
+        state={{ isLoading: loading }}
       />
     </Box>
   );

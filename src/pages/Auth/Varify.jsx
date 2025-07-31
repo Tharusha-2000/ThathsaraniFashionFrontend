@@ -11,6 +11,8 @@ import { Box, styled } from "@mui/system";
 import { useNavigate,useLocation } from 'react-router-dom';
 import axios from "axios";
 import styledRe from "styled-components";
+import { SendEmail,verifyOTP } from "../../api";
+
 
 const TextButton = styledRe.div`
   width: 100%;
@@ -200,61 +202,69 @@ function Varify() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const resendOTP = () => {
+  const resendOTP = async () => {
     setOtp("");
     if (!email) {
-      dispatch(openSnackbar({
-        message: "Cannot resend OTP without an email address",
-        severity: "error",
-      }));
+      dispatch(
+        openSnackbar({
+          message: "Cannot resend OTP without an email address",
+          severity: "error",
+        })
+      );
       return;
     }
-    
-  axios.post(`http://localhost:7000/api/users/generateOTP&sendmail`,{email:email})
-    .then(result => {
-        if(result.data){
-             if(result.status === 201 ) {
-              dispatch(openSnackbar({
-                message: result.data?.msg || "OTP resent successfully!",
-                severity: "success",
-              }));
-              //  window.alert(result.data.msg);   
-               }
-            }
-            
-          });
-          
-      
-      };
+  
+    try {
+      const result = await SendEmail({ email }); // Await the SendEmail function
+      if (result.data && result.status === 201) {
+        dispatch(
+          openSnackbar({
+            message: result.data?.msg || "OTP resent successfully!",
+            severity: "success",
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Error resending OTP:", error);
+      dispatch(
+        openSnackbar({
+          message: error.response?.data?.msg || "Failed to resend OTP",
+          severity: "error",
+        })
+      );
+    }
+  };
 
-  const handleSubmit = () => {
-
-     console.log(otp);
-     axios.get(`http://localhost:7000/api/users/verifyOTP?&code=${otp}` )
-       .then(result => {
-           if(result.data){
-            dispatch(openSnackbar({
-              message: result.data.msg,
-              severity: "success",
-            }));
-              //window.alert(result.data.msg);
-                  if(result.status === 201 ) {
-                      navigate('/reset-password' ,{state: { email:email} });
-                      }
-                  }
-               }).catch(err => {
-                console.log(err.toJSON());
-                  console.log(err);
-                  if (err.response) {
-                    console.log(err);
-                   dispatch(openSnackbar({
-                    message: err.response.data.msg,
-                    severity: "error",
-                  }));
-               //  window.alert(err.response.data.msg);
-                  }
-                });
-};
+  const handleSubmit = async () => {
+    console.log(otp);
+  
+    try {
+      const result = await verifyOTP(otp); // Call the API function
+      if (result.data) {
+        dispatch(
+          openSnackbar({
+            message: result.data.msg,
+            severity: "success",
+          })
+        );
+  
+        if (result.status === 201) {
+          navigate("/reset-password", { state: { email: email } });
+        }
+      }
+    } catch (err) {
+      console.error(err);
+  
+      if (err.response) {
+        dispatch(
+          openSnackbar({
+            message: err.response.data.msg,
+            severity: "error",
+          })
+        );
+      }
+    }
+  };
 
 
   return (
