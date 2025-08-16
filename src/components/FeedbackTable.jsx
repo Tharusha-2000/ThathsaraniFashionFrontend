@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Typography, Avatar } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
-import { getAllOrders } from "../api"; // adjust path
+import { getOrders } from "../api"; // adjust path
 
 const FeedbackTable = () => {
   const [orders, setOrders] = useState([]);
@@ -10,7 +10,7 @@ const FeedbackTable = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await getAllOrders(); // adjust if needed
+        const response = await getOrders(); // adjust if needed
         console.log("Fetched orders:", response);
         if (response && response.data && response.data.orders) {
           setOrders(response.data.orders);

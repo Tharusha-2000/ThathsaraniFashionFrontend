@@ -413,18 +413,7 @@ export const deleteUser = async (id) => {
   return response.data;
 };
 
-//get all orders -dilum
-export const getAllOrders = async () => {
-  const token = localStorage.getItem("thathsarani-token");
-  console.log(token);
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  return await API.get(`Order`, config);
-};
-//get all feedback -dilum
+
 export const getAllFeedback = async () => {
   const token = localStorage.getItem("thathsarani-token");
   console.log(token);
@@ -435,7 +424,7 @@ export const getAllFeedback = async () => {
   };
   return await API.get(`Feedback/GetAllFeedbacks`, config);
 };
-//get order details -dilum
+
 export const getallOrderDetails = async (id) => {
   const token = localStorage.getItem("thathsarani-token");
   console.log(token);
@@ -448,4 +437,39 @@ export const getallOrderDetails = async (id) => {
 };
 
 
+export const revenueData = async () => {
+  const token = localStorage.getItem("thathsarani-token");
+  console.log(token);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  return await API.get(`revenue-data`,config);
+};
 
+export const predictRevenueDatanext = async () => {
+  const token = localStorage.getItem("thathsarani-token");
+  console.log(token);
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+ // Array of month names
+ const monthNames = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+ ];
+
+ const currentDate = new Date();
+ const currentMonthIndex = currentDate.getMonth(); // 0-indexed
+ const nextMonthIndex = currentMonthIndex === 11 ? 0 : currentMonthIndex + 1; // If December, next month is January
+
+ const currentMonthName = monthNames[currentMonthIndex];
+ const nextMonthName = monthNames[nextMonthIndex];
+
+ console.log(`Current Month: ${currentMonthName}, Next Month: ${nextMonthName}`);
+
+  return await API.post(`predict-month-revenue`,{ month: nextMonthName } ,config);
+};
