@@ -80,7 +80,19 @@ function AddProduct() {
         setErrors(updatedErrors);
       }
     }
-
+    if (field === "count") {
+      if (value !== "" && (isNaN(value) || value < 0)) {
+        setErrors({
+          ...errors,
+          [`count_${index}`]: "Count must be a non-negative integer",
+        });
+        return;
+      } else {
+        const updatedErrors = { ...errors };
+        delete updatedErrors[`count_${index}`];
+        setErrors(updatedErrors);
+      }
+    }
     updatedList[index][field] = value;
 
     setSizePriceList(updatedList);
@@ -96,6 +108,7 @@ function AddProduct() {
     const updatedSizeList = sizePriceList.map((row) => ({
       size: row.size === "Small" ? "S" : row.size === "Medium" ? "M" : "L",
       price: row.price,
+      count: row.count,
     }));
   
     const productData = {
@@ -277,7 +290,7 @@ function AddProduct() {
                   Select Categories
                 </Typography>
                 <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-                  {[ "Blouse","Baggy T-Shirt", "T-Shirt", "Lady's Denim", "Frock", "Baby Frock",  "Baby Full Dress","Sale", "Children's Dress",].map((category) => (
+                  {[ "Blouse","Baggy T-Shirt", "T-Shirt", "Lady's Denim", "Frock", "Baby Frock",  "Baby Full Dress","Sale", "Children's Dress","Skirt", "Others",].map((category) => (
                     <FormControlLabel
                       key={category}
                       control={
@@ -323,6 +336,18 @@ function AddProduct() {
                       helperText={errors[`price_${index}`]}
                       required
                     />
+                     <TextField
+                      label="Count"
+                      type="number"
+                      variant="outlined"
+                      value={row.count} // Default to 0 if count is undefined
+                      onChange={(e) => {
+                        handleChange(index, "count", e.target.value);
+                      }}
+                      error={!!errors[`count_${index}`]}
+                      helperText={errors[`count_${index}`]}
+                      required
+                    />
                   </Box>
                 ))}
 
@@ -335,6 +360,7 @@ function AddProduct() {
                   }
                   label="Available"
                 />
+
 
                 <Box>
                   <Button

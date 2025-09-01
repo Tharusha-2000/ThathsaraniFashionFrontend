@@ -61,6 +61,8 @@ export const filter = [
        "Baby Frock",
        "Baby Full Dress",
        "Sale",
+       "Skirt",
+       "Others",
        "Children's Dress",
      ],
   },

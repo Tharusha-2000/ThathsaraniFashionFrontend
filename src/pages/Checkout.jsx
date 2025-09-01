@@ -16,7 +16,9 @@ import{
   getClientSecret,
   deleteFromCart,
   updatePaymentState,
+  updateProductCount,
   sendEmailToOrderOwner,
+  
 } from "../api";
 import axios from "axios";
 
@@ -38,8 +40,11 @@ const PaymentForm = (props) => {
   const dispatch = useDispatch();
   const history = useNavigate();
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const { cartItems } = location.state;
   const cartIds = props.cartIds;
+
+  console.log("Cart Ids", cartItems);
 
   const [paymentId, setPaymentId] = useState("");
   const [paymentDate, setPaymentDate] = useState("");
@@ -125,9 +130,12 @@ const PaymentForm = (props) => {
       console.log("Payment succeeded!", paymentIntent);
       console.log("Payment Intent ID:", paymentIntent.id);
       console.log("Payment :",props.OrderId);
+      console.log("Cart Ids:",cartItems);
       updatePaymentState(props.OrderId);
+      updateProductCount(cartItems);
       
-
+  
+      
       for (let i = 0; i < cartIds.length; i++) {
         console.log(cartIds[i]);
         await deleteFromCart(cartIds[i]);

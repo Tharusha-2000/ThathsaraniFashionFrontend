@@ -150,7 +150,7 @@ const Div = styled.div`
   gap: 24px;
 `;
 
-const FoodDetails = () => {
+const ClothDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -160,6 +160,7 @@ const FoodDetails = () => {
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState();
   const [selectedSize, setSelectedSize] = useState("");
+  const [selectedSizeRemainQuntity,setSelectedSizeRemainQuntity] = useState("");
   const [selectedQty, setSelectedQty] = useState(1);
   const { cart } = useSelector((state) => state.cart);
   const [averageRating, setAverageRating] = useState(null);
@@ -196,6 +197,16 @@ const FoodDetails = () => {
       dispatch(
         openSnackbar({
           message: "Please select a size",
+          severity: "error",
+        })
+      );
+      return;
+    }
+    if (selectedQty > selectedSizeRemainQuntity) {
+      setCartLoading(false);
+      dispatch(
+        openSnackbar({
+          message: `Only ${selectedSizeRemainQuntity} items available in selected size`,
           severity: "error",
         })
       );
@@ -332,6 +343,7 @@ const FoodDetails = () => {
               Select Size
               <Items>
                 {product?.sizes.map((size, index) => (
+                  <div key={index} style={{ marginBottom: "10px" }}>
                   <Button
                     key={index}
                     outlined={selectedSize !== size.size}
@@ -339,10 +351,16 @@ const FoodDetails = () => {
                     text={size.size.toUpperCase()}
                     onClick={() => {
                       setSelectedSize(size.size);
+                      setSelectedSizeRemainQuntity(size.count);
                     }}
                   />
+                  <span style={{ display: "block", marginTop: "5px", fontSize: "12px", color: size.count ? "red" :  "gray"}}>
+                   {size.count > 0 ? `Remain: ${size.count}` : "Out of Stock"}
+                  </span>
+                  </div> 
                 ))}
               </Items>
+
             </Div>
 
             <Div>
@@ -357,16 +375,18 @@ const FoodDetails = () => {
                 </IconButton>
               </Items>
             </Div>
-      
+            
             <ButtonWrapper>
               <Button
                 text="Add to Cart"
                 full
                 outlined
                 isLoading={cartLoading}
+                disabled={selectedQty > selectedSizeRemainQuntity || selectedSizeRemainQuntity === 0}
                 onClick={() => addCart()}
               />
               <Button text="Order Now" full 
+                disabled={selectedQty > selectedSizeRemainQuntity || selectedSizeRemainQuntity === 0}
                 onClick={() => addCart()}
               />
             </ButtonWrapper>
@@ -379,4 +399,4 @@ const FoodDetails = () => {
   );
 };
 
-export default FoodDetails;
+export default ClothDetails;

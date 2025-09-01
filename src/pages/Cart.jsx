@@ -302,6 +302,12 @@ const Cart = () => {
             totalAmount: totalAmount2,
             cartIds: cartIds,
             orderId:response.data.newOrder._id, // Safely access this value
+            cartItems: cart.map((item) => ({
+              productId: item.productId,
+              clothSize: item.clothSize,
+              count: item.count,
+              unitPrice: item.unitPrice,
+            })),
           },
         });
       }

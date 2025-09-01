@@ -294,6 +294,22 @@ export const updatePaymentState = async (data) => {
  
 }
 
+export const updateProductCount = async (data) => {
+  const token = localStorage.getItem("thathsarani-token");
+  console.log(token);
+  console.log(data);
+ 
+ const config = {
+  headers: {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  },
+}; 
+  await API.put(`updateProductCount`,data,config);
+
+}
+
+
 export const sendEmailToOrderOwner = async (data) => {
   const token = localStorage.getItem("thathsarani-token");
   console.log(token);

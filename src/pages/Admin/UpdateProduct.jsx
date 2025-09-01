@@ -29,7 +29,7 @@ function UpdateProduct({ open, onClose, productData, onUpdate }) {
     productData.isAvailable || false
   );
   const [sizePriceList, setSizePriceList] = useState(
-    productData.sizes || [{ size: "", price: "" }]
+    productData.sizes || [{ size: "", price: "", count: "" }]
   );
   const [selectedCategories, setSelectedCategories] = useState(
     productData.categories || []
@@ -48,6 +48,8 @@ function UpdateProduct({ open, onClose, productData, onUpdate }) {
     "Baby Frock",
     "Baby Full Dress",
     "Sale",
+    "Skirt",
+    "Others",
     "Children's Dress",
   ];
 
@@ -91,6 +93,19 @@ function UpdateProduct({ open, onClose, productData, onUpdate }) {
         delete updatedErrors[`price_${index}`];
         return updatedErrors;
       });
+    }
+    if (field === "count") {
+      if (value !== "" && (isNaN(value) || value < 0)) {
+        setErrors({
+          ...errors,
+          [`count_${index}`]: "Count must be a non-negative integer",
+        });
+        return;
+      } else {
+        const updatedErrors = { ...errors };
+        delete updatedErrors[`count_${index}`];
+        setErrors(updatedErrors);
+      }
     }
 
     setSizePriceList(updatedList);
@@ -318,6 +333,18 @@ function UpdateProduct({ open, onClose, productData, onUpdate }) {
                 onChange={(e) => handleChange(index, "price", e.target.value)}
                 error={!!errors[`price_${index}`]}
                 helperText={errors[`price_${index}`]}
+                required
+              />
+                <TextField
+                label="Count"
+                type="number"
+                variant="outlined"
+                value={row.count } // Default to 0 if count is undefined
+                onChange={(e) => {
+                  handleChange(index, "count", e.target.value);
+                }}
+                error={!!errors[`count_${index}`]}
+                helperText={errors[`count_${index}`]}
                 required
               />
             </Box>

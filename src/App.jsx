@@ -7,8 +7,8 @@ import Order from "./pages/Order";
 import { useState } from "react";
 import Authentication from "./pages/Auth/Authentication";
 import Cart from "./pages/Cart";
-import FoodDetails from "./pages/FoodDetails";
-import FoodListing from "./pages/FoodListing";
+import ClothDetails from "./pages/ClothDetails";
+import ClothListing from "./pages/ClothListing";
 import { useDispatch, useSelector } from "react-redux";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import Customers from "./pages/Admin/Customers";
@@ -48,8 +48,8 @@ function App() {
           <Routes>
             <Route path="/" exact element={<Home />} />
             <Route path="/cart" exact element={<Cart />} />
-            <Route path="/dishes/:id" exact element={<FoodDetails />} />
-            <Route path="/dishes" exact element={<FoodListing />} />
+            <Route path="/clothes/:id" exact element={<ClothDetails />} />
+            <Route path="/clothes" exact element={<ClothListing />} />
             <Route path="/forgetPassword" exact element={<ForgetPassword />} />
             <Route path="/reset-password" exact element={<ResetPassword/>} />
             <Route path="/varify" exact element={<Varify />} />

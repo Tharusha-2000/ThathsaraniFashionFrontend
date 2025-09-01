@@ -82,7 +82,7 @@ const Selectableitem = styled.div`
   `}
 `;
 
-const FoodListing = () => {
+const ClothListing = () => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 2000]); // Default price range
@@ -120,13 +120,14 @@ const FoodListing = () => {
                   aria-label="Price"
                   defaultValue={priceRange}
                   min={0}
-                  max={2000}
+                  max={10000}
                   step={50}
                   valueLabelDisplay="auto"
                   marks={[
                     { value: 0, label: "LKR 0" },
-                    { value: 2000, label: "LKR 2000" },
+                    { value: 10000, label: "LKR 10000" },
                   ]}
+
                   onChange={(e, newValue) => setPriceRange(newValue)}
                 />
               ) : filters.value === "category" ? (
@@ -171,4 +172,4 @@ const FoodListing = () => {
   );
 };
 
-export default FoodListing;
+export default ClothListing;
