@@ -2,8 +2,14 @@ import axios from "axios";
 
 
 const API = axios.create({
-  baseURL: "http://localhost:7000/api/users/",
+  baseURL: "https://thathsarani-fashion-backend.vercel.app/api/users/",
 });
+
+// const API = axios.create({
+//   baseURL: "http://localhost:7000/api/users/",
+// });
+
+
 
 export const UserSignIn = async (data) => {
   return await API.post(`login`, data);
