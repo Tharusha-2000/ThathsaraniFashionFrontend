@@ -93,11 +93,15 @@ const Contact = () => {
           </div>
         </div>
 
+
+        
         {/* Contact form container */}
         <div className="contact-container">
           <div className="contact-heading">
             <h2>Contact Us</h2>
             <p>
+             <strong>Refunds are not available.</strong> However, you can exchange items if needed. 
+             <br />
               For inquiries, order issues, or collaboration opportunities, reach out to us!
             </p>
           </div>
