@@ -60,6 +60,7 @@ const SignIn = ({ setOpenAuth }) => {
   
 
   const validateInputs = () => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!username || !password) {
       dispatch(
         openSnackbar({
@@ -69,6 +70,17 @@ const SignIn = ({ setOpenAuth }) => {
        );
        setLoading(false);
        setButtonDisabled(false);
+      return false;
+    }
+    if (!emailRegex.test(username)) {
+      dispatch(
+        openSnackbar({
+          message: "Please enter a valid email address",
+          severity: "error",
+        })
+      );
+      setLoading(false);
+      setButtonDisabled(false);
       return false;
     }
     return true;

@@ -13,10 +13,10 @@ const Contact = () => {
 
     emailjs
       .sendForm(
-        "service_og7e34f", // Replace with your EmailJS Service ID
-        "template_753xbhi", // Replace with your EmailJS Template ID
+        "service_l9n3zv9", // Replace with your EmailJS Service ID
+        "template_tbaaokr", // Replace with your EmailJS Template ID
         form.current,
-        "a3lYensrYyYrAdK9n" // Replace with your EmailJS Public Key
+        "EiqRfyL8sSjrN4iUu" // Replace with your EmailJS Public Key
       )
       .then(
         (result) => {
@@ -102,13 +102,25 @@ const Contact = () => {
             <p>
              <strong>Refunds are not available.</strong> However, you can exchange items if needed. 
              <br />
+             <br />
               For inquiries, order issues, or collaboration opportunities, reach out to us!
             </p>
           </div>
           <div className="contact-form">
             <form ref={form} onSubmit={sendEmail}>
-              <input type="text" name="user_name" placeholder="Your Name" required />
-              <input type="email" name="user_email" placeholder="Your Email" required />
+              <input type="text" 
+                     name="user_name" 
+                     placeholder="Your Name" 
+                     pattern="[a-zA-Z\s]+" 
+                     title="Name can only contain letters and spaces"
+                     required />
+              <input type="email" 
+                     name="user_email" 
+                     placeholder="Your Email" 
+                     pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" 
+                     title="Please enter a valid email address"
+                     required />
+
               <textarea name="message" placeholder="Message" rows="4" required></textarea>
               <button type="submit">Send</button>
             </form>
