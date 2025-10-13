@@ -160,7 +160,7 @@ const ClothDetails = () => {
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState();
   const [selectedSize, setSelectedSize] = useState("");
-  const [selectedSizeRemainQuntity,setSelectedSizeRemainQuntity] = useState("");
+  const [selectedSizeRemainQuntity,setSelectedSizeRemainQuntity] = useState(0);
   const [selectedQty, setSelectedQty] = useState(1);
   const { cart } = useSelector((state) => state.cart);
   const [averageRating, setAverageRating] = useState(null);
@@ -377,6 +377,7 @@ const ClothDetails = () => {
             </Div>
             
             <ButtonWrapper>
+            
               <Button
                 text="Add to Cart"
                 full
