@@ -242,7 +242,48 @@ const Cart = () => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(String(email).toLowerCase());
       };
+        // Validate first name and last name
+      const validateName = (name) => {
+        const re = /^[a-zA-Z\s]+$/; // Only letters and spaces allowed
+        return re.test(name);
+      };
 
+          // Validate phone number
+      const validatePhoneNo = (phoneNo) => {
+        const re = /^[0-9]{10}$/; // Only 10-digit numbers allowed
+        return re.test(phoneNo);
+      };
+
+      if (!validatePhoneNo(deliveryDetails.phoneNo)) {
+        dispatch(
+          openSnackbar({
+            message: "Phone number must be a valid 10-digit number.",
+            severity: "error",
+          })
+        );
+        return 1;
+      }
+
+      if (!validateName(deliveryDetails.fname)) {
+        dispatch(
+          openSnackbar({
+            message: "First name can only contain letters and spaces.",
+            severity: "error",
+          })
+        );
+        return 1;
+      }
+
+      if (!validateName(deliveryDetails.lname)) {
+        dispatch(
+          openSnackbar({
+            message: "Last name can only contain letters and spaces.",
+            severity: "error",
+          })
+        );
+        return 1;
+      }
+      // Validate phone number (basic validation for 10-15 digits)  
       if (!validateEmail(deliveryDetails.email)) {
         dispatch(
           openSnackbar({

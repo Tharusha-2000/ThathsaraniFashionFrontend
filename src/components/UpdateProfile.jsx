@@ -20,6 +20,64 @@ const UpdateProfile = ({ open, onClose, userdata, onUpdate }) => {
   });
   const dispatch = useDispatch();
 
+  const validateInputs = () => {
+    const nameRegex = /^[a-zA-Z\s]+$/; // Only letters and spaces allowed
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation
+    const phoneRegex = /^[0-9]{10}$/; // 10-digit phone number
+
+    if (!formData.fname || !nameRegex.test(formData.fname)) {
+      dispatch(
+        openSnackbar({
+          message: "First name can only contain letters and spaces.",
+          severity: "error",
+        })
+      );
+      return false;
+    }
+
+    if (!formData.lname || !nameRegex.test(formData.lname)) {
+      dispatch(
+        openSnackbar({
+          message: "Last name can only contain letters and spaces.",
+          severity: "error",
+        })
+      );
+      return false;
+    }
+
+    if (!formData.email || !emailRegex.test(formData.email)) {
+      dispatch(
+        openSnackbar({
+          message: "Please enter a valid email address.",
+          severity: "error",
+        })
+      );
+      return false;
+    }
+
+    if (!formData.phoneNo || !phoneRegex.test(formData.phoneNo)) {
+      dispatch(
+        openSnackbar({
+          message: "Phone number must be a valid 10-digit number.",
+          severity: "error",
+        })
+      );
+      return false;
+    }
+
+    if (!formData.address) {
+      dispatch(
+        openSnackbar({
+          message: "Address cannot be empty.",
+          severity: "error",
+        })
+      );
+      return false;
+    }
+
+    return true;
+  };
+
   // Populate formData with userdata only when the dialog opens for the first time
   useEffect(() => {
     if (open && userdata && !formData.fname) {
@@ -35,6 +93,10 @@ const UpdateProfile = ({ open, onClose, userdata, onUpdate }) => {
 
   // Save updated data and send it to the backend
   const handleSave = async () => {
+    if (!validateInputs()) {
+      return;
+    }
+
     try {
       const response = await updateUser(formData);
       if (response.status === 200) {
